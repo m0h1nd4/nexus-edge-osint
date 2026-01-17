@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge Data Collection v6.1</title>
+    <style>
+        /* --- CYBERPUNK STYLING V6 --- */
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #121212;
+            --neon-yellow: #fcee0a;
+            --neon-cyan: #00f0ff;
+            --neon-red: #ff003c;
+            --neon-green: #0aff0a;
+            --text-main: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px; /* Platz fuer Tab-Bar unten oder oben */
+            box-sizing: border-box;
+        }
+
+        /* NAVIGATION TABS */
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #000;
+            border-bottom: 2px solid var(--neon-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: #555;
+            border: none;
+            padding: 15px 0;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn.active {
+            color: var(--neon-yellow);
+            background: #1a1a1a;
+            border-bottom: 3px solid var(--neon-yellow);
+        }
+
+        /* PAGES */
+        .page { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* INPUT FORMS */
+        .input-group { margin-bottom: 15px; }
+        .label { color: var(--neon-cyan); font-size: 12px; margin-bottom: 5px; display: block; font-weight: bold; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            box-sizing: border-box;
+            border-radius: 0;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 5px var(--neon-yellow);
+        }
+
+        /* BUTTONS */
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-add { background: var(--neon-cyan); color: #000; }
+        .btn-update { background: var(--neon-yellow); color: #000; display: none; } /* Standardmaessig versteckt */
+        .btn-cancel { background: #333; color: #fff; margin-top: 5px; display: none;} 
+
+        /* TABELLE (DATABASE) */
+        .table-container {
+            overflow-x: auto; /* Scrollen auf Handy */
+            border: 1px solid #333;
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        th { text-align: left; background: #111; color: var(--neon-yellow); padding: 8px; border-bottom: 1px solid var(--neon-cyan); font-size: 12px;}
+        td { padding: 8px; border-bottom: 1px solid #222; font-size: 14px; vertical-align: top;}
+        
+        .type-badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: #222; color: #fff; border: 1px solid #555; margin-right: 5px;}
+        
+        /* ACTION BUTTONS IN TABLE */
+        .btn-icon { padding: 5px 10px; border: none; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-edit { background: #333; color: var(--neon-cyan); }
+        .btn-del { background: var(--neon-red); color: #fff; }
+
+        /* EXPORT AREA */
+        .info-box { border: 1px dashed #555; padding: 15px; color: #888; font-size: 12px; margin-bottom: 20px;}
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 15px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            width: 100%;
+            max-width: 420px;
+            background: #0b0b0b;
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            padding: 15px;
+        }
+        .modal-title {
+            color: var(--neon-yellow);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .modal-text {
+            font-size: 12px;
+            color: #bbb;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .modal-actions {
+            display: grid;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-modal {
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-sync { background: var(--neon-cyan); color: #000; }
+        .btn-overwrite { background: var(--neon-yellow); color: #000; }
+        .btn-rename { background: #333; color: #fff; }
+        .btn-cancel-modal { background: #111; color: #777; border: 1px solid #333; }
+
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="showPage('input')">INPUT</button>
+        <button class="nav-btn" onclick="showPage('list')">DATABASE</button>
+        <button class="nav-btn" onclick="showPage('export')">EXPORT</button>
+    </div>
+
+    <div id="page-input" class="page active">
+        
+        <div class="input-group">
+            <span class="label">ENTITY NAME *</span>
+            <input type="text" id="inpName" placeholder="z.B. Max Mustermann">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div class="input-group" style="flex: 1;">
+                <span class="label">TYP</span>
+                <select id="inpType">
+                    <option value="Person">Person</option>
+                    <option value="Firma">Firma</option>
+                    <option value="Location">Ort / Location</option>
+                    <option value="Fahrzeug">Fahrzeug</option>
+                    <option value="Organisation">Organisation</option>
+                </select>
+            </div>
+            <div class="input-group" style="flex: 1;">
+                <span class="label">RELATION (Kante)</span>
+                <select id="inpRel">
+                    <option value="MEMBER_OF">Mitglied</option>
+                    <option value="FRIEND_OF">Freund/Bekannt</option>
+                    <option value="WORKS_AT">Arbeitet bei</option>
+                    <option value="OWNER_OF">Besitzer</option>
+                    <option value="FAMILY">Familie</option>
+                    <option value="SEEN_AT">Geseh. bei (Default)</option>
+                    <option value="SUSPECT">Verd&auml;chtig</option>
+                    <option value="DIRECTOR_OF">Vorstand/GF</option>
+                    <option value="SUBSIDIARY_OF">Tochtergesellschaft</option>
+                    <option value="INVESTED_IN">Investment/Anteile</option>
+                    <option value="CONTRACTED_BY">Auftragnehmer</option>
+                    <option value="REGISTERED_AT">Sitz/Adresse</option>
+                    <option value="ALIAS_OF">Alias/Deckname</option>
+                    <option value="AFFILIATED_WITH">Verbund/Assoziiert</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <span class="label">SOCIAL ID / KENNZEICHEN (Optional)</span>
+            <input type="text" id="inpId" placeholder="FB-ID, Kennzeichen, Email...">
+        </div>
+
+        <div class="input-group">
+            <span class="label">FUNDORT / QUELLE (Source Node) *</span>
+            <input type="text" id="inpSource" placeholder="z.B. AGM Webseite, Facebook Gruppe...">
+        </div>
+
+        <button id="btnAdd" class="btn-action btn-add" onclick="addEntry()">>> SAVE TO MEMORY <<</button>
+        <button id="btnUpdate" class="btn-action btn-update" onclick="updateEntry()">>> UPDATE ENTRY <<</button>
+        <button id="btnCancel" class="btn-action btn-cancel" onclick="cancelEdit()">ABBRECHEN</button>
+    </div>
+
+    <div id="page-list" class="page">
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ENTITY</th>
+                        <th>RELATION</th>
+                        <th>SOURCE</th>
+                        <th style="min-width: 80px;">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+        <p style="text-align: center; color: #555; font-size: 12px; margin-top: 10px;">
+            <-- Wischen f&uuml;r mehr Spalten -->
+        </p>
+
+        <div style="margin-top: 15px;">
+            <button class="btn-action btn-add" onclick="downloadCSV()">[ SAVE CSV ]</button>
+            <button class="btn-action btn-add" style="background: var(--neon-yellow);" onclick="shareCSV()">[ SHARE CSV ]</button>
+            <button class="btn-action btn-add" style="background: #333; color: #aaa; font-size: 12px; margin-top: 15px;" onclick="dedupeDB()">[ DUPLIKATE ENTFERNEN ]</button>
+        </div>
+    </div>
+
+    <div id="page-export" class="page">
+        <div class="info-box">
+            STATUS: <span id="countDisplay">0</span> Datens&auml;tze im Speicher.<br><br>
+            Format: CSV (Comma Separated)<br>
+            Columns: name, type, identifier, relation, source
+        </div>
+
+        <button class="btn-action btn-add" style="background: var(--neon-yellow);" onclick="downloadCSV()">[ DOWNLOAD CSV ]</button>
+
+        <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;">
+            <span class="label">KONFIG</span>
+            <div class="input-group" style="margin-top: 10px;">
+                <span class="label">STANDARD EXPORT-NAME</span>
+                <input type="text" id="exportFileName" placeholder="osint_data.csv">
+            </div>
+            <div style="font-size: 12px; color: #777;">Letzte Import-Datei: <span id="lastImportName">-</span></div>
+        </div>
+
+        <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+            <span class="label">CSV IMPORTIEREN</span>
+            <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(this)" style="margin-top: 5px;">
+        </div>
+    </div>
+
+    <div id="exportDialog" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="exportDialogTitle">
+            <div class="modal-title" id="exportDialogTitle">DATEINAME EXISTIERT</div>
+            <div class="modal-text">
+                Zuletzt importiert: <span id="exportDialogName">-</span><br>
+                Waehle: Synchronisieren (Merge + Duplikate), Ueberschreiben oder Umbenennen.
+            </div>
+            <div id="exportRenameWrap" style="display: none;">
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <span class="label">NEUER DATEINAME</span>
+                    <input type="text" id="exportRenameInput" placeholder="osint_data.csv">
+                </div>
+                <button class="btn-modal btn-overwrite" onclick="confirmRenameExport()">UMBENENNEN</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-sync" onclick="chooseExportSync()">SYNCHRONISIEREN</button>
+                <button class="btn-modal btn-overwrite" onclick="chooseExportOverwrite()">UEBERSCHREIBEN</button>
+                <button class="btn-modal btn-rename" onclick="chooseExportRename()">UMBENENNEN</button>
+                <button class="btn-modal btn-cancel-modal" onclick="chooseExportCancel()">ABBRECHEN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STORE ---
+        let db = [];
+        let editIndex = null; // Speichert, welchen Index wir gerade bearbeiten
+
+        // --- CONFIG (localStorage) ---
+        const CONFIG_KEY = "osint_config";
+        const DB_KEY = "osint_db";
+        let config = {
+            exportFileName: "osint_data.csv",
+            lastImportName: "",
+            lastImportedDb: []
+        };
+
+        function loadConfig() {
+            try {
+                const raw = localStorage.getItem(CONFIG_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (data && typeof data === "object") {
+                        config = Object.assign({}, config, data);
+                    }
+                }
+            } catch (e) {
+                // ignore broken config
+            }
+        }
+
+        function saveConfig() {
+            try {
+                localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+            } catch (e) {
+                // ignore storage errors
+            }
+        }
+
+        function loadDB() {
+            try {
+                const raw = localStorage.getItem(DB_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (Array.isArray(data)) {
+                        db = data;
+                    }
+                }
+            } catch (e) {
+                // ignore broken db
+            }
+        }
+
+        function saveDB() {
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(db));
+            } catch (e) {
+                // ignore storage errors
+            }
+        }
+
+        function sanitizeFileName(name) {
+            return name.replace(/[\\/\\:*?"<>|]/g, "_");
+        }
+
+        function getExportFileName() {
+            let name = (config.exportFileName || "").trim();
+            if (!name) name = "osint_data.csv";
+            if (!/\.csv$/i.test(name)) name += ".csv";
+            return sanitizeFileName(name);
+        }
+
+        function applyConfigToUI() {
+            const input = document.getElementById("exportFileName");
+            if (input) input.value = config.exportFileName || "";
+            const last = document.getElementById("lastImportName");
+            if (last) last.innerText = config.lastImportName || "-";
+        }
+
+        loadConfig();
+        loadDB();
+
+        // --- NAVIGATION ---
+        function showPage(pageId) {
+            // Alle Seiten ausblenden
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            // Gewaehlte Seite anzeigen
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            // Button aktiv setzen (bisschen Hacky ueber den Text, aber simpel)
+            const btnIndex = pageId === 'input' ? 0 : pageId === 'list' ? 1 : 2;
+            document.querySelectorAll('.nav-btn')[btnIndex].classList.add('active');
+            
+            if(pageId === 'list') renderTable();
+            if(pageId === 'export') {
+                document.getElementById('countDisplay').innerText = db.length;
+                applyConfigToUI();
+            }
+        }
+
+        // --- CRUD LOGIC ---
+
+        function getInputs() {
+            return {
+                name: document.getElementById('inpName').value.trim(),
+                type: document.getElementById('inpType').value,
+                rel: document.getElementById('inpRel').value,
+                id: document.getElementById('inpId').value.trim(),
+                source: document.getElementById('inpSource').value.trim()
+            };
+        }
+
+        function clearInputs() {
+            document.getElementById('inpName').value = "";
+            document.getElementById('inpId').value = "";
+            // Source lassen wir oft stehen, weil man oft mehrere Leute am selben Ort findet!
+            // document.getElementById('inpSource').value = ""; 
+            document.getElementById('inpName').focus();
+        }
+
+        function addEntry() {
+            const data = getInputs();
+            if (!data.name || !data.source) { alert("Name und Fundort sind Pflicht!"); return; }
+
+            const key = rowKey(data);
+            const exists = db.some(row => rowKey(row) === key);
+            if (exists) {
+                alert("ACHTUNG: Dieser Eintrag existiert bereits exakt so in der Datenbank!");
+                return;
+            }
+
+            db.unshift(data); // Vorne anfuegen
+            saveDB();
+            clearInputs();
+            alert("Gespeichert!");
+        }
+
+        function dedupeDB() {
+            const oldLen = db.length;
+            db = mergeDedupe([], db);
+            const newLen = db.length;
+            saveDB();
+            renderTable();
+            alert((oldLen - newLen) + " Duplikate entfernt!");
+        }
+
+        function loadEntryForEdit(index) {
+            const entry = db[index];
+            editIndex = index;
+
+            // Werte in Felder fuellen
+            document.getElementById('inpName').value = entry.name;
+            document.getElementById('inpType').value = entry.type || "Person";
+            document.getElementById('inpRel').value = entry.rel || "SEEN_AT";
+            document.getElementById('inpId').value = entry.id || "";
+            document.getElementById('inpSource').value = entry.source;
+
+            // UI umstellen auf Edit Modus
+            document.getElementById('btnAdd').style.display = 'none';
+            document.getElementById('btnUpdate').style.display = 'block';
+            document.getElementById('btnCancel').style.display = 'block';
+
+            // Zur Input Seite springen
+            showPage('input');
+        }
+
+        function updateEntry() {
+            if (editIndex === null) return;
+            const data = getInputs();
+            
+            if (!data.name || !data.source) { alert("Daten fehlen!"); return; }
+
+            db[editIndex] = data; // Ueberschreiben
+            saveDB();
+            
+            cancelEdit(); // Modus beenden
+            alert("Eintrag aktualisiert!");
+            showPage('list'); // Zurueck zur Liste
+        }
+
+        function cancelEdit() {
+            editIndex = null;
+            clearInputs();
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('btnUpdate').style.display = 'none';
+            document.getElementById('btnCancel').style.display = 'none';
+        }
+
+        function deleteEntry(index) {
+            if(confirm("Eintrag wirklich l\u00f6schen?")) {
+                db.splice(index, 1);
+                saveDB();
+                renderTable();
+            }
+        }
+
+        // --- TABLE RENDER ---
+        function renderTable() {
+            const tbody = document.querySelector("#dataTable tbody");
+            tbody.innerHTML = "";
+
+            db.forEach((row, index) => {
+                const tr = document.createElement("tr");
+                
+                // HTML fuer die Zeile
+                tr.innerHTML = `
+                    <td>
+                        <span class="type-badge">${row.type}</span><br>
+                        <strong>${row.name}</strong>
+                        <div style="font-size: 10px; color: #888;">${row.id}</div>
+                    </td>
+                    <td style="color: var(--neon-cyan); font-size: 11px;">${row.rel}</td>
+                    <td>${row.source}</td>
+                    <td>
+                        <button class="btn-icon btn-edit" onclick="loadEntryForEdit(${index})">EDIT</button>
+                        <button class="btn-icon btn-del" onclick="deleteEntry(${index})">X</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CSV IMPORT / EXPORT ---
+        function buildCSV(rows) {
+            const data = rows || db;
+            let csv = "name,type,identifier,relation,source\n";
+            data.forEach(row => {
+                // Kommas in Texten entfernen, um CSV nicht zu killen
+                const c = (t) => (t || "").replace(/,/g, " ");
+                csv += `${c(row.name)},${c(row.type)},${c(row.id)},${c(row.rel)},${c(row.source)}\n`;
+            });
+            return csv;
+        }
+
+        function rowKey(row) {
+            const parts = [row.name, row.type, row.id, row.rel, row.source]
+                .map(v => (v || "").toString().trim().toLowerCase());
+            return parts.join("|");
+        }
+
+        function mergeDedupe(baseRows, addRows) {
+            const map = new Map();
+            baseRows.forEach(r => map.set(rowKey(r), r));
+            addRows.forEach(r => {
+                const k = rowKey(r);
+                if (!map.has(k)) map.set(k, r);
+            });
+            return Array.from(map.values());
+        }
+
+        let exportDialogResolve = null;
+
+        function openExportDialog(exportName) {
+            return new Promise((resolve) => {
+                exportDialogResolve = resolve;
+                const modal = document.getElementById("exportDialog");
+                const nameEl = document.getElementById("exportDialogName");
+                const wrap = document.getElementById("exportRenameWrap");
+                const input = document.getElementById("exportRenameInput");
+                nameEl.innerText = exportName;
+                wrap.style.display = "none";
+                input.value = exportName;
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+            });
+        }
+
+        function closeExportDialog(result) {
+            const modal = document.getElementById("exportDialog");
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
+            if (exportDialogResolve) {
+                exportDialogResolve(result);
+                exportDialogResolve = null;
+            }
+        }
+
+        function chooseExportSync() {
+            closeExportDialog({ mode: "sync" });
+        }
+
+        function chooseExportOverwrite() {
+            closeExportDialog({ mode: "export" });
+        }
+
+        function chooseExportRename() {
+            const wrap = document.getElementById("exportRenameWrap");
+            wrap.style.display = "block";
+            document.getElementById("exportRenameInput").focus();
+        }
+
+        function confirmRenameExport() {
+            const input = document.getElementById("exportRenameInput");
+            const newName = (input.value || "").trim();
+            if (!newName) return;
+            config.exportFileName = newName;
+            saveConfig();
+            applyConfigToUI();
+            closeExportDialog({ mode: "export", name: getExportFileName() });
+        }
+
+        function chooseExportCancel() {
+            closeExportDialog({ mode: "cancel" });
+        }
+
+        async function resolveExportMode() {
+            const exportName = getExportFileName();
+            const lastName = (config.lastImportName || "").trim();
+            const hasLast = Array.isArray(config.lastImportedDb) && config.lastImportedDb.length > 0;
+            if (!lastName || !hasLast) return { mode: "export", name: exportName };
+            if (lastName.toLowerCase() !== exportName.toLowerCase()) return { mode: "export", name: exportName };
+
+            const choice = await openExportDialog(exportName);
+            if (!choice || choice.mode === "cancel") return { mode: "cancel" };
+            if (choice.mode === "sync") return { mode: "sync", name: exportName };
+            if (choice.mode === "export") return { mode: "export", name: choice.name || exportName };
+            return { mode: "cancel" };
+        }
+
+        function exportCSV(opts) {
+            const csv = buildCSV(opts && opts.rows ? opts.rows : db);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = (opts && opts.name) ? opts.name : getExportFileName();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function downloadCSV() {
+            if (db.length === 0) { alert("Keine Daten!"); return; }
+            const decision = await resolveExportMode();
+            if (decision.mode === "cancel") return;
+            if (decision.mode === "sync") {
+                const merged = mergeDedupe(config.lastImportedDb || [], db);
+                db = merged;
+                saveDB();
+                exportCSV({ rows: merged, name: decision.name });
+                return;
+            }
+            exportCSV({ name: decision.name });
+        }
+
+        async function shareCSV() {
+            if (db.length === 0) { alert("Keine Daten!"); return; }
+            const decision = await resolveExportMode();
+            if (decision.mode === "cancel") return;
+            let rows = db;
+            if (decision.mode === "sync") {
+                rows = mergeDedupe(config.lastImportedDb || [], db);
+                db = rows;
+                saveDB();
+            }
+
+            const csv = buildCSV(rows);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const canShareFiles = typeof File !== "undefined" && navigator.share && navigator.canShare;
+
+            if (canShareFiles) {
+                const file = new File([blob], decision.name, { type: 'text/csv;charset=utf-8;' });
+                if (navigator.canShare({ files: [file] })) {
+                    navigator.share({ title: "OSINT CSV", files: [file] }).catch(() => {});
+                    return;
+                }
+            }
+
+            if (navigator.share) {
+                navigator.share({ title: "OSINT CSV", text: csv }).catch(() => {});
+                return;
+            }
+
+            // Fallback: direct download
+            exportCSV({ rows: rows, name: decision.name });
+        }
+
+        function loadCSV(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                db = [];
+                // Check ob Header existiert
+                let start = lines[0].toLowerCase().includes("name") ? 1 : 0;
+                
+                for(let i=start; i<lines.length; i++) {
+                    const line = lines[i].trim();
+                    if(line) {
+                        const p = line.split(',');
+                        // Mapping alter CSVs (nur 2 Spalten) vs neuer CSVs (5 Spalten)
+                        if(p.length === 2) {
+                            db.push({ name: p[0], type: "Person", id: "", rel: "SEEN_AT", source: p[1] });
+                        } else if (p.length >= 5) {
+                            db.push({ name: p[0], type: p[1], id: p[2], rel: p[3], source: p[4] });
+                        }
+                    }
+                }
+                config.lastImportName = file.name || "";
+                config.lastImportedDb = db.slice();
+                saveConfig();
+                saveDB();
+                alert(db.length + " Datens\u00e4tze geladen!");
+                showPage('list');
+            };
+            reader.readAsText(file);
+        }
+
+        document.getElementById("exportFileName").addEventListener("input", (e) => {
+            config.exportFileName = e.target.value;
+            saveConfig();
+        });
+
+        applyConfigToUI();
+    </script>
+</body>
+</html>
