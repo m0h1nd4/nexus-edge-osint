@@ -124,7 +124,7 @@
             box-shadow: 0 0 5px var(--neon-yellow);
         }
 
-        /* Used dynamically via JavaScript */
+        /*noinspection CssUnusedSymbol*/
         input.input-error, select.input-error {
             border-color: var(--neon-red);
             box-shadow: 0 0 5px var(--neon-red);
@@ -221,7 +221,6 @@
         .btn-update { background: var(--neon-yellow); color: #000; display: none; }
         .btn-cancel { background: #333; color: #fff; margin-top: 5px; display: none;}
 
-        /* SCROLL TO TOP - class added via JavaScript */
         .scroll-top-btn {
             position: fixed;
             bottom: 20px;
@@ -238,12 +237,13 @@
             display: none;
             z-index: 90;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            justify-content: center;
+            align-items: center;
         }
 
+        /*noinspection CssUnusedSymbol*/
         .scroll-top-btn.is-visible {
             display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         /* TABELLE (DATABASE) */
