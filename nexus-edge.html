@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edge Data Collection v6.1</title>
+    <title>NightCity OSINT Edge v7.0</title>
     <style>
-        /* --- CYBERPUNK STYLING V6 --- */
+        /* --- CYBERPUNK STYLING V7 --- */
         :root {
             --bg-dark: #050505;
             --bg-panel: #121212;
@@ -16,14 +16,15 @@
             --text-main: #e0e0e0;
         }
 
+        * { box-sizing: border-box; }
+
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
-            padding-bottom: 80px; /* Platz fuer Tab-Bar unten oder oben */
-            box-sizing: border-box;
+            padding-bottom: 80px;
         }
 
         /* NAVIGATION TABS */
@@ -49,6 +50,7 @@
             font-size: 14px;
             cursor: pointer;
             transition: 0.2s;
+            min-height: 48px;
         }
 
         .nav-btn.active {
@@ -62,11 +64,45 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* REQUIRED FIELDS SECTION */
+        .required-section {
+            background: #0a0a0a;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+        }
+
+        .section-title {
+            color: var(--neon-cyan);
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .required-section .section-title {
+            color: var(--neon-yellow);
+        }
+
         /* INPUT FORMS */
         .input-group { margin-bottom: 15px; }
-        .label { color: var(--neon-cyan); font-size: 12px; margin-bottom: 5px; display: block; font-weight: bold; }
-        
-        input, select {
+        .label {
+            color: var(--neon-cyan);
+            font-size: 11px;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .label.required::after {
+            content: " *";
+            color: var(--neon-red);
+        }
+
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             background: #000;
@@ -74,14 +110,96 @@
             color: #fff;
             font-family: 'Courier New', Courier, monospace;
             font-size: 16px;
-            box-sizing: border-box;
-            border-radius: 0;
+            border-radius: 4px;
         }
 
-        input:focus, select:focus {
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--neon-yellow);
             box-shadow: 0 0 5px var(--neon-yellow);
+        }
+
+        input.error, select.error {
+            border-color: var(--neon-red);
+            box-shadow: 0 0 5px var(--neon-red);
+        }
+
+        /* COLLAPSIBLE SECTIONS */
+        .collapsible {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #111;
+            cursor: pointer;
+            min-height: 48px;
+            user-select: none;
+        }
+
+        .collapsible-header:active {
+            background: #1a1a1a;
+        }
+
+        .collapsible-title {
+            color: var(--neon-cyan);
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .collapsible-icon {
+            color: var(--neon-yellow);
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .collapsible.open .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 15px;
+        }
+
+        .collapsible.open .collapsible-content {
+            display: block;
+        }
+
+        /* DYNAMIC FIELDS */
+        .dynamic-section {
+            display: none;
+        }
+
+        .dynamic-section.active {
+            display: block;
+        }
+
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
         }
 
         /* BUTTONS */
@@ -95,29 +213,82 @@
             margin-top: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-height: 48px;
+            border-radius: 4px;
         }
         .btn-add { background: var(--neon-cyan); color: #000; }
-        .btn-update { background: var(--neon-yellow); color: #000; display: none; } /* Standardmaessig versteckt */
-        .btn-cancel { background: #333; color: #fff; margin-top: 5px; display: none;} 
+        .btn-update { background: var(--neon-yellow); color: #000; display: none; }
+        .btn-cancel { background: #333; color: #fff; margin-top: 5px; display: none;}
+
+        /* SCROLL TO TOP */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--neon-cyan);
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            z-index: 90;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .scroll-top-btn.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* TABELLE (DATABASE) */
         .table-container {
-            overflow-x: auto; /* Scrollen auf Handy */
+            overflow-x: auto;
             border: 1px solid #333;
+            border-radius: 4px;
         }
         table { width: 100%; border-collapse: collapse; min-width: 400px; }
         th { text-align: left; background: #111; color: var(--neon-yellow); padding: 8px; border-bottom: 1px solid var(--neon-cyan); font-size: 12px;}
         td { padding: 8px; border-bottom: 1px solid #222; font-size: 14px; vertical-align: top;}
-        
-        .type-badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: #222; color: #fff; border: 1px solid #555; margin-right: 5px;}
-        
+
+        .type-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #222;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
         /* ACTION BUTTONS IN TABLE */
-        .btn-icon { padding: 5px 10px; border: none; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-icon {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+            min-height: 44px;
+            border-radius: 4px;
+        }
         .btn-edit { background: #333; color: var(--neon-cyan); }
         .btn-del { background: var(--neon-red); color: #fff; }
 
         /* EXPORT AREA */
-        .info-box { border: 1px dashed #555; padding: 15px; color: #888; font-size: 12px; margin-bottom: 20px;}
+        .info-box {
+            border: 1px dashed #555;
+            padding: 15px;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background: #0a0a0a;
+        }
 
         /* MODAL */
         .modal-overlay {
@@ -138,6 +309,7 @@
             border: 1px solid var(--neon-cyan);
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
             padding: 15px;
+            border-radius: 8px;
         }
         .modal-title {
             color: var(--neon-yellow);
@@ -166,11 +338,33 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            min-height: 44px;
+            border-radius: 4px;
         }
         .btn-sync { background: var(--neon-cyan); color: #000; }
         .btn-overwrite { background: var(--neon-yellow); color: #000; }
         .btn-rename { background: #333; color: #fff; }
         .btn-cancel-modal { background: #111; color: #777; border: 1px solid #333; }
+
+        /* SEARCH */
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        /* COUNT BADGE */
+        .count-badge {
+            background: var(--neon-yellow);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
 
     </style>
 </head>
@@ -178,65 +372,399 @@
 
     <div class="nav-bar">
         <button class="nav-btn active" onclick="showPage('input')">INPUT</button>
-        <button class="nav-btn" onclick="showPage('list')">DATABASE</button>
+        <button class="nav-btn" onclick="showPage('list')">DATABASE <span id="navCount" class="count-badge" style="display:none;">0</span></button>
         <button class="nav-btn" onclick="showPage('export')">EXPORT</button>
     </div>
 
+    <!-- INPUT PAGE -->
     <div id="page-input" class="page active">
-        
-        <div class="input-group">
-            <span class="label">ENTITY NAME *</span>
-            <input type="text" id="inpName" placeholder="z.B. Max Mustermann">
-        </div>
 
-        <div style="display: flex; gap: 10px;">
-            <div class="input-group" style="flex: 1;">
-                <span class="label">TYP</span>
-                <select id="inpType">
-                    <option value="Person">Person</option>
-                    <option value="Firma">Firma</option>
-                    <option value="Location">Ort / Location</option>
-                    <option value="Fahrzeug">Fahrzeug</option>
-                    <option value="Organisation">Organisation</option>
-                </select>
+        <!-- REQUIRED FIELDS SECTION -->
+        <div class="required-section">
+            <div class="section-title">// PFLICHTFELDER</div>
+
+            <div class="input-group">
+                <span class="label required">Node 1: Entity Name</span>
+                <input type="text" id="inpName" placeholder="z.B. Max Mustermann, Firma XYZ...">
             </div>
-            <div class="input-group" style="flex: 1;">
-                <span class="label">RELATION (Kante)</span>
-                <select id="inpRel">
-                    <option value="MEMBER_OF">Mitglied</option>
-                    <option value="FRIEND_OF">Freund/Bekannt</option>
-                    <option value="WORKS_AT">Arbeitet bei</option>
-                    <option value="OWNER_OF">Besitzer</option>
-                    <option value="FAMILY">Familie</option>
-                    <option value="SEEN_AT">Geseh. bei (Default)</option>
-                    <option value="SUSPECT">Verd&auml;chtig</option>
-                    <option value="DIRECTOR_OF">Vorstand/GF</option>
-                    <option value="SUBSIDIARY_OF">Tochtergesellschaft</option>
-                    <option value="INVESTED_IN">Investment/Anteile</option>
-                    <option value="CONTRACTED_BY">Auftragnehmer</option>
-                    <option value="REGISTERED_AT">Sitz/Adresse</option>
-                    <option value="ALIAS_OF">Alias/Deckname</option>
-                    <option value="AFFILIATED_WITH">Verbund/Assoziiert</option>
-                </select>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <span class="label">Typ</span>
+                    <select id="inpType" onchange="updateDynamicFields()">
+                        <option value="Person">Person</option>
+                        <option value="Firma">Firma</option>
+                        <option value="Verein">Verein</option>
+                        <option value="Organisation">Organisation</option>
+                        <option value="Partei">Partei</option>
+                        <option value="Club">Club</option>
+                        <option value="Location">Location</option>
+                        <option value="Fahrzeug">Fahrzeug</option>
+                        <option value="Objekt">Objekt</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="label required">Relationship</span>
+                    <select id="inpRel">
+                        <option value="MEMBER_OF">MEMBER_OF</option>
+                        <option value="FRIEND_OF">FRIEND_OF</option>
+                        <option value="WORKS_AT">WORKS_AT</option>
+                        <option value="OWNER_OF">OWNER_OF</option>
+                        <option value="FAMILY">FAMILY</option>
+                        <option value="SEEN_AT">SEEN_AT</option>
+                        <option value="SUSPECT">SUSPECT</option>
+                        <option value="DIRECTOR_OF">DIRECTOR_OF</option>
+                        <option value="SUBSIDIARY_OF">SUBSIDIARY_OF</option>
+                        <option value="INVESTED_IN">INVESTED_IN</option>
+                        <option value="CONTRACTED_BY">CONTRACTED_BY</option>
+                        <option value="REGISTERED_AT">REGISTERED_AT</option>
+                        <option value="ALIAS_OF">ALIAS_OF</option>
+                        <option value="AFFILIATED_WITH">AFFILIATED_WITH</option>
+                        <option value="LIVES_AT">LIVES_AT</option>
+                        <option value="MARRIED_TO">MARRIED_TO</option>
+                        <option value="CHILD_OF">CHILD_OF</option>
+                        <option value="PARENT_OF">PARENT_OF</option>
+                        <option value="SIBLING_OF">SIBLING_OF</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="label required">Node 2: Source</span>
+                <input type="text" id="inpSource" placeholder="z.B. LinkedIn, Facebook Gruppe, Handelsregister...">
             </div>
         </div>
 
-        <div class="input-group">
-            <span class="label">SOCIAL ID / KENNZEICHEN (Optional)</span>
-            <input type="text" id="inpId" placeholder="FB-ID, Kennzeichen, Email...">
+        <!-- PERSON SPECIFIC FIELDS -->
+        <div id="section-person" class="dynamic-section">
+            <div class="collapsible open">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span class="collapsible-title">// Person Details</span>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <span class="label">Geburtsdatum</span>
+                            <input type="date" id="inpBirthDate">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Geschlecht</span>
+                            <select id="inpGender">
+                                <option value="">-- Auswählen --</option>
+                                <option value="männlich">männlich</option>
+                                <option value="weiblich">weiblich</option>
+                                <option value="divers">divers</option>
+                                <option value="unbekannt">unbekannt</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <span class="label">Größe (cm)</span>
+                            <input type="number" id="inpHeight" placeholder="182">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Haarfarbe</span>
+                            <select id="inpHairColor">
+                                <option value="">--</option>
+                                <option value="schwarz">schwarz</option>
+                                <option value="braun">braun</option>
+                                <option value="blond">blond</option>
+                                <option value="rot">rot</option>
+                                <option value="grau">grau</option>
+                                <option value="weiß">weiß</option>
+                                <option value="glatze">glatze</option>
+                                <option value="andere">andere</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Augenfarbe</span>
+                            <select id="inpEyeColor">
+                                <option value="">--</option>
+                                <option value="braun">braun</option>
+                                <option value="blau">blau</option>
+                                <option value="grün">grün</option>
+                                <option value="grau">grau</option>
+                                <option value="haselnuss">haselnuss</option>
+                                <option value="andere">andere</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Nationalität</span>
+                        <input type="text" id="inpNationality" placeholder="z.B. Deutsch">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Besondere Merkmale</span>
+                        <textarea id="inpDistinctiveFeatures" placeholder="Narben, Tattoos, etc."></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="input-group">
-            <span class="label">FUNDORT / QUELLE (Source Node) *</span>
-            <input type="text" id="inpSource" placeholder="z.B. AGM Webseite, Facebook Gruppe...">
+        <!-- ORGANIZATION SPECIFIC FIELDS -->
+        <div id="section-org" class="dynamic-section">
+            <div class="collapsible open">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span class="collapsible-title">// Organisation Details</span>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <span class="label">Gründungsdatum</span>
+                            <input type="date" id="inpFoundingDate">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Rechtsform</span>
+                            <select id="inpLegalForm">
+                                <option value="">-- Auswählen --</option>
+                                <option value="GmbH">GmbH</option>
+                                <option value="AG">AG</option>
+                                <option value="UG">UG</option>
+                                <option value="OHG">OHG</option>
+                                <option value="KG">KG</option>
+                                <option value="GbR">GbR</option>
+                                <option value="e.V.">e.V.</option>
+                                <option value="Stiftung">Stiftung</option>
+                                <option value="Einzelunternehmen">Einzelunternehmen</option>
+                                <option value="andere">andere</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Registernummer</span>
+                        <input type="text" id="inpRegistrationNumber" placeholder="HRB 12345">
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <span class="label">Branche</span>
+                            <input type="text" id="inpIndustry" placeholder="IT, Handel, etc.">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Mitarbeiteranzahl</span>
+                            <input type="text" id="inpEmployeeCount" placeholder="10-50">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Webseite</span>
+                        <input type="url" id="inpWebsite" placeholder="https://example.de">
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- VEHICLE SPECIFIC FIELDS -->
+        <div id="section-vehicle" class="dynamic-section">
+            <div class="collapsible open">
+                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                    <span class="collapsible-title">// Fahrzeug Details</span>
+                    <span class="collapsible-icon">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="input-group">
+                        <span class="label">Kennzeichen</span>
+                        <input type="text" id="inpLicensePlate" placeholder="B-AB 1234" style="text-transform: uppercase;">
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <span class="label">Marke</span>
+                            <input type="text" id="inpVehicleMake" placeholder="BMW, VW, etc.">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Modell</span>
+                            <input type="text" id="inpVehicleModel" placeholder="3er, Golf, etc.">
+                        </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <span class="label">Farbe</span>
+                            <input type="text" id="inpVehicleColor" placeholder="schwarz">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Baujahr</span>
+                            <input type="number" id="inpVehicleYear" placeholder="2020">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">FIN/VIN</span>
+                            <input type="text" id="inpVin" placeholder="WBA...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADDRESS SECTION (Always available) -->
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="collapsible-title">// Adresse</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="grid-2">
+                    <div class="input-group" style="grid-column: 1 / -1;">
+                        <span class="label">Straße</span>
+                        <input type="text" id="inpStreet" placeholder="Hauptstraße">
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="input-group">
+                        <span class="label">Hausnr.</span>
+                        <input type="text" id="inpHouseNumber" placeholder="123">
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <span class="label">Zusatz</span>
+                        <input type="text" id="inpAddressExtra" placeholder="Hinterhaus, 2. OG">
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="input-group">
+                        <span class="label">PLZ</span>
+                        <input type="text" id="inpPostalCode" placeholder="12345">
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <span class="label">Stadt/Ort</span>
+                        <input type="text" id="inpCity" placeholder="Berlin">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="label">Land</span>
+                    <input type="text" id="inpCountry" placeholder="Deutschland" value="Deutschland">
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT SECTION -->
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="collapsible-title">// Kontakt</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">Telefon (Festnetz)</span>
+                        <input type="tel" id="inpPhone" placeholder="+49 30 12345678">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Mobil</span>
+                        <input type="tel" id="inpMobile" placeholder="+49 170 1234567">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">Fax</span>
+                        <input type="tel" id="inpFax" placeholder="+49 30 12345679">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">E-Mail</span>
+                        <input type="email" id="inpEmail" placeholder="mail@example.de">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOCIAL MEDIA SECTION -->
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="collapsible-title">// Social Media</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">Facebook</span>
+                        <input type="text" id="inpFacebook" placeholder="URL oder Username">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Instagram</span>
+                        <input type="text" id="inpInstagram" placeholder="@username">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">TikTok</span>
+                        <input type="text" id="inpTiktok" placeholder="@username">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Twitter/X</span>
+                        <input type="text" id="inpTwitter" placeholder="@username">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">LinkedIn</span>
+                        <input type="text" id="inpLinkedin" placeholder="URL">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">XING</span>
+                        <input type="text" id="inpXing" placeholder="URL">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">YouTube</span>
+                        <input type="text" id="inpYoutube" placeholder="Kanal-URL">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Telegram</span>
+                        <input type="text" id="inpTelegram" placeholder="@username">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">WhatsApp</span>
+                        <input type="text" id="inpWhatsapp" placeholder="+49...">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Signal</span>
+                        <input type="text" id="inpSignal" placeholder="+49...">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <span class="label">Snapchat</span>
+                        <input type="text" id="inpSnapchat" placeholder="@username">
+                    </div>
+                    <div class="input-group">
+                        <span class="label">Discord</span>
+                        <input type="text" id="inpDiscord" placeholder="username#1234">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- META SECTION -->
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="collapsible-title">// Meta / Notizen</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="input-group">
+                    <span class="label">Informationsquelle</span>
+                    <input type="text" id="inpInfoSource" placeholder="Woher stammt diese Info?">
+                </div>
+                <div class="input-group">
+                    <span class="label">Notizen</span>
+                    <textarea id="inpNotes" placeholder="Zusätzliche Informationen..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
         <button id="btnAdd" class="btn-action btn-add" onclick="addEntry()">>> SAVE TO MEMORY <<</button>
         <button id="btnUpdate" class="btn-action btn-update" onclick="updateEntry()">>> UPDATE ENTRY <<</button>
         <button id="btnCancel" class="btn-action btn-cancel" onclick="cancelEdit()">ABBRECHEN</button>
     </div>
 
+    <!-- DATABASE PAGE -->
     <div id="page-list" class="page">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Suchen..." oninput="filterTable()">
+        </div>
+
         <div class="table-container">
             <table id="dataTable">
                 <thead>
@@ -244,54 +772,61 @@
                         <th>ENTITY</th>
                         <th>RELATION</th>
                         <th>SOURCE</th>
-                        <th style="min-width: 80px;">ACTION</th>
+                        <th style="min-width: 100px;">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
-                    </tbody>
+                </tbody>
             </table>
         </div>
         <p style="text-align: center; color: #555; font-size: 12px; margin-top: 10px;">
-            <-- Wischen f&uuml;r mehr Spalten -->
+            &lt;-- Wischen für mehr Spalten --&gt;
         </p>
 
         <div style="margin-top: 15px;">
-            <button class="btn-action btn-add" onclick="downloadCSV()">[ SAVE CSV ]</button>
+            <button class="btn-action btn-add" onclick="downloadCSV()">[ DOWNLOAD CSV ]</button>
             <button class="btn-action btn-add" style="background: var(--neon-yellow);" onclick="shareCSV()">[ SHARE CSV ]</button>
             <button class="btn-action btn-add" style="background: #333; color: #aaa; font-size: 12px; margin-top: 15px;" onclick="dedupeDB()">[ DUPLIKATE ENTFERNEN ]</button>
+            <button class="btn-action btn-add" style="background: var(--neon-red); font-size: 12px; margin-top: 5px;" onclick="clearAllData()">[ ALLE DATEN LÖSCHEN ]</button>
         </div>
     </div>
 
+    <!-- EXPORT PAGE -->
     <div id="page-export" class="page">
         <div class="info-box">
-            STATUS: <span id="countDisplay">0</span> Datens&auml;tze im Speicher.<br><br>
-            Format: CSV (Comma Separated)<br>
-            Columns: name, type, identifier, relation, source
+            STATUS: <span id="countDisplay">0</span> Datensätze im Speicher.<br><br>
+            Format: CSV (UTF-8)<br>
+            Spalten: 47 Felder (Desktop-kompatibel)
         </div>
 
         <button class="btn-action btn-add" style="background: var(--neon-yellow);" onclick="downloadCSV()">[ DOWNLOAD CSV ]</button>
 
         <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;">
-            <span class="label">KONFIG</span>
+            <span class="label" style="color: var(--neon-cyan);">KONFIGURATION</span>
             <div class="input-group" style="margin-top: 10px;">
-                <span class="label">STANDARD EXPORT-NAME</span>
+                <span class="label">Export-Dateiname</span>
                 <input type="text" id="exportFileName" placeholder="osint_data.csv">
             </div>
             <div style="font-size: 12px; color: #777;">Letzte Import-Datei: <span id="lastImportName">-</span></div>
         </div>
 
         <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
-            <span class="label">CSV IMPORTIEREN</span>
+            <span class="label" style="color: var(--neon-cyan);">CSV IMPORTIEREN</span>
+            <p style="font-size: 11px; color: #666; margin: 10px 0;">Unterstützt altes (5 Spalten) und neues Format (47 Spalten)</p>
             <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(this)" style="margin-top: 5px;">
         </div>
     </div>
 
+    <!-- SCROLL TO TOP BUTTON -->
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">↑</button>
+
+    <!-- EXPORT DIALOG -->
     <div id="exportDialog" class="modal-overlay" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="exportDialogTitle">
             <div class="modal-title" id="exportDialogTitle">DATEINAME EXISTIERT</div>
             <div class="modal-text">
                 Zuletzt importiert: <span id="exportDialogName">-</span><br>
-                Waehle: Synchronisieren (Merge + Duplikate), Ueberschreiben oder Umbenennen.
+                Wähle: Synchronisieren (Merge + Duplikate), Überschreiben oder Umbenennen.
             </div>
             <div id="exportRenameWrap" style="display: none;">
                 <div class="input-group" style="margin-bottom: 10px;">
@@ -302,7 +837,7 @@
             </div>
             <div class="modal-actions">
                 <button class="btn-modal btn-sync" onclick="chooseExportSync()">SYNCHRONISIEREN</button>
-                <button class="btn-modal btn-overwrite" onclick="chooseExportOverwrite()">UEBERSCHREIBEN</button>
+                <button class="btn-modal btn-overwrite" onclick="chooseExportOverwrite()">ÜBERSCHREIBEN</button>
                 <button class="btn-modal btn-rename" onclick="chooseExportRename()">UMBENENNEN</button>
                 <button class="btn-modal btn-cancel-modal" onclick="chooseExportCancel()">ABBRECHEN</button>
             </div>
@@ -310,18 +845,94 @@
     </div>
 
     <script>
+        // --- CSV COLUMN ORDER (47 columns) ---
+        const CSV_COLUMNS = [
+            'name', 'type', 'relation', 'source',
+            'street', 'house_number', 'address_extra', 'postal_code', 'city', 'country',
+            'phone', 'mobile', 'fax', 'email',
+            'birth_date', 'gender', 'height_cm', 'hair_color', 'eye_color', 'nationality', 'distinctive_features',
+            'founding_date', 'registration_number', 'industry', 'website', 'employee_count', 'legal_form',
+            'license_plate', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'vehicle_year', 'vin',
+            'facebook', 'instagram', 'tiktok', 'twitter', 'linkedin', 'xing', 'youtube', 'telegram', 'whatsapp', 'signal', 'snapchat', 'discord',
+            'info_source', 'notes'
+        ];
+
+        // --- FIELD MAPPING (form ID -> data key) ---
+        const FIELD_MAP = {
+            'inpName': 'name',
+            'inpType': 'type',
+            'inpRel': 'relation',
+            'inpSource': 'source',
+            'inpStreet': 'street',
+            'inpHouseNumber': 'house_number',
+            'inpAddressExtra': 'address_extra',
+            'inpPostalCode': 'postal_code',
+            'inpCity': 'city',
+            'inpCountry': 'country',
+            'inpPhone': 'phone',
+            'inpMobile': 'mobile',
+            'inpFax': 'fax',
+            'inpEmail': 'email',
+            'inpBirthDate': 'birth_date',
+            'inpGender': 'gender',
+            'inpHeight': 'height_cm',
+            'inpHairColor': 'hair_color',
+            'inpEyeColor': 'eye_color',
+            'inpNationality': 'nationality',
+            'inpDistinctiveFeatures': 'distinctive_features',
+            'inpFoundingDate': 'founding_date',
+            'inpRegistrationNumber': 'registration_number',
+            'inpIndustry': 'industry',
+            'inpWebsite': 'website',
+            'inpEmployeeCount': 'employee_count',
+            'inpLegalForm': 'legal_form',
+            'inpLicensePlate': 'license_plate',
+            'inpVehicleMake': 'vehicle_make',
+            'inpVehicleModel': 'vehicle_model',
+            'inpVehicleColor': 'vehicle_color',
+            'inpVehicleYear': 'vehicle_year',
+            'inpVin': 'vin',
+            'inpFacebook': 'facebook',
+            'inpInstagram': 'instagram',
+            'inpTiktok': 'tiktok',
+            'inpTwitter': 'twitter',
+            'inpLinkedin': 'linkedin',
+            'inpXing': 'xing',
+            'inpYoutube': 'youtube',
+            'inpTelegram': 'telegram',
+            'inpWhatsapp': 'whatsapp',
+            'inpSignal': 'signal',
+            'inpSnapchat': 'snapchat',
+            'inpDiscord': 'discord',
+            'inpInfoSource': 'info_source',
+            'inpNotes': 'notes'
+        };
+
+        // Entity types that show organization fields
+        const ORG_TYPES = ['Firma', 'Verein', 'Organisation', 'Partei', 'Club'];
+
         // --- DATA STORE ---
         let db = [];
-        let editIndex = null; // Speichert, welchen Index wir gerade bearbeiten
+        let editIndex = null;
 
         // --- CONFIG (localStorage) ---
-        const CONFIG_KEY = "osint_config";
-        const DB_KEY = "osint_db";
+        const CONFIG_KEY = "osint_config_v7";
+        const DB_KEY = "osint_db_v7";
         let config = {
             exportFileName: "osint_data.csv",
             lastImportName: "",
             lastImportedDb: []
         };
+
+        // --- INITIALIZATION ---
+        function init() {
+            loadConfig();
+            loadDB();
+            applyConfigToUI();
+            updateDynamicFields();
+            updateNavCount();
+            setupScrollListener();
+        }
 
         function loadConfig() {
             try {
@@ -332,17 +943,13 @@
                         config = Object.assign({}, config, data);
                     }
                 }
-            } catch (e) {
-                // ignore broken config
-            }
+            } catch (e) {}
         }
 
         function saveConfig() {
             try {
                 localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-            } catch (e) {
-                // ignore storage errors
-            }
+            } catch (e) {}
         }
 
         function loadDB() {
@@ -354,21 +961,350 @@
                         db = data;
                     }
                 }
-            } catch (e) {
-                // ignore broken db
-            }
+                // Try to migrate from old format
+                if (db.length === 0) {
+                    const oldRaw = localStorage.getItem("osint_db");
+                    if (oldRaw) {
+                        const oldData = JSON.parse(oldRaw);
+                        if (Array.isArray(oldData) && oldData.length > 0) {
+                            db = oldData.map(migrateOldEntry);
+                            saveDB();
+                        }
+                    }
+                }
+            } catch (e) {}
         }
 
         function saveDB() {
             try {
                 localStorage.setItem(DB_KEY, JSON.stringify(db));
-            } catch (e) {
-                // ignore storage errors
+                updateNavCount();
+            } catch (e) {}
+        }
+
+        function migrateOldEntry(old) {
+            // Convert old 5-field format to new 47-field format
+            const entry = createEmptyEntry();
+            entry.name = old.name || '';
+            entry.type = old.type || 'Person';
+            entry.relation = old.rel || 'SEEN_AT';
+            entry.source = old.source || '';
+
+            // Map old 'id' field based on type
+            if (old.id) {
+                if (old.type === 'Fahrzeug') {
+                    entry.license_plate = old.id;
+                } else {
+                    entry.info_source = old.id;
+                }
+            }
+            return entry;
+        }
+
+        function createEmptyEntry() {
+            const entry = {};
+            CSV_COLUMNS.forEach(col => {
+                entry[col] = '';
+            });
+            entry.country = 'Deutschland';
+            return entry;
+        }
+
+        // --- NAVIGATION ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('page-' + pageId).classList.add('active');
+
+            const btnIndex = pageId === 'input' ? 0 : pageId === 'list' ? 1 : 2;
+            document.querySelectorAll('.nav-btn')[btnIndex].classList.add('active');
+
+            if (pageId === 'list') renderTable();
+            if (pageId === 'export') {
+                document.getElementById('countDisplay').innerText = db.length;
+                applyConfigToUI();
             }
         }
 
+        function updateNavCount() {
+            const badge = document.getElementById('navCount');
+            if (db.length > 0) {
+                badge.innerText = db.length;
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // --- DYNAMIC FIELDS ---
+        function updateDynamicFields() {
+            const type = document.getElementById('inpType').value;
+
+            // Hide all dynamic sections
+            document.querySelectorAll('.dynamic-section').forEach(s => s.classList.remove('active'));
+
+            // Show relevant section
+            if (type === 'Person') {
+                document.getElementById('section-person').classList.add('active');
+            } else if (ORG_TYPES.includes(type)) {
+                document.getElementById('section-org').classList.add('active');
+            } else if (type === 'Fahrzeug') {
+                document.getElementById('section-vehicle').classList.add('active');
+            }
+        }
+
+        // --- COLLAPSIBLE SECTIONS ---
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('open');
+        }
+
+        // --- SCROLL TO TOP ---
+        function setupScrollListener() {
+            window.addEventListener('scroll', () => {
+                const btn = document.getElementById('scrollTopBtn');
+                if (window.scrollY > 300) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- CRUD LOGIC ---
+        function getInputs() {
+            const entry = createEmptyEntry();
+
+            for (const [inputId, dataKey] of Object.entries(FIELD_MAP)) {
+                const el = document.getElementById(inputId);
+                if (el) {
+                    entry[dataKey] = el.value.trim();
+                }
+            }
+
+            return entry;
+        }
+
+        function setInputs(entry) {
+            for (const [inputId, dataKey] of Object.entries(FIELD_MAP)) {
+                const el = document.getElementById(inputId);
+                if (el) {
+                    el.value = entry[dataKey] || '';
+                }
+            }
+            updateDynamicFields();
+        }
+
+        function clearInputs() {
+            const entry = createEmptyEntry();
+            // Keep source (often same for multiple entries)
+            const currentSource = document.getElementById('inpSource').value;
+
+            setInputs(entry);
+
+            document.getElementById('inpSource').value = currentSource;
+            document.getElementById('inpName').focus();
+
+            // Clear error states
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+        }
+
+        function validateRequired() {
+            let valid = true;
+            const requiredFields = ['inpName', 'inpRel', 'inpSource'];
+
+            requiredFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    el.classList.add('error');
+                    valid = false;
+                } else {
+                    el.classList.remove('error');
+                }
+            });
+
+            return valid;
+        }
+
+        function addEntry() {
+            if (!validateRequired()) {
+                alert("Bitte alle Pflichtfelder ausfüllen!");
+                return;
+            }
+
+            const data = getInputs();
+            const key = rowKey(data);
+            const exists = db.some(row => rowKey(row) === key);
+
+            if (exists) {
+                alert("ACHTUNG: Dieser Eintrag existiert bereits!");
+                return;
+            }
+
+            db.unshift(data);
+            saveDB();
+            clearInputs();
+            alert("Gespeichert!");
+        }
+
+        function loadEntryForEdit(index) {
+            const entry = db[index];
+            editIndex = index;
+
+            setInputs(entry);
+
+            document.getElementById('btnAdd').style.display = 'none';
+            document.getElementById('btnUpdate').style.display = 'block';
+            document.getElementById('btnCancel').style.display = 'block';
+
+            showPage('input');
+            scrollToTop();
+        }
+
+        function updateEntry() {
+            if (editIndex === null) return;
+
+            if (!validateRequired()) {
+                alert("Bitte alle Pflichtfelder ausfüllen!");
+                return;
+            }
+
+            const data = getInputs();
+            db[editIndex] = data;
+            saveDB();
+
+            cancelEdit();
+            alert("Eintrag aktualisiert!");
+            showPage('list');
+        }
+
+        function cancelEdit() {
+            editIndex = null;
+            clearInputs();
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('btnUpdate').style.display = 'none';
+            document.getElementById('btnCancel').style.display = 'none';
+        }
+
+        function deleteEntry(index) {
+            if (confirm("Eintrag wirklich löschen?")) {
+                db.splice(index, 1);
+                saveDB();
+                renderTable();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm("ALLE Daten wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden!")) {
+                if (confirm("Bist du WIRKLICH sicher?")) {
+                    db = [];
+                    saveDB();
+                    renderTable();
+                    alert("Alle Daten gelöscht.");
+                }
+            }
+        }
+
+        function dedupeDB() {
+            const oldLen = db.length;
+            db = mergeDedupe([], db);
+            const newLen = db.length;
+            saveDB();
+            renderTable();
+            alert((oldLen - newLen) + " Duplikate entfernt!");
+        }
+
+        // --- TABLE RENDER ---
+        function renderTable() {
+            const tbody = document.querySelector("#dataTable tbody");
+            tbody.innerHTML = "";
+
+            const searchTerm = (document.getElementById('searchInput').value || '').toLowerCase();
+
+            db.forEach((row, index) => {
+                // Filter
+                if (searchTerm) {
+                    const searchable = [row.name, row.type, row.relation, row.source, row.city, row.email].join(' ').toLowerCase();
+                    if (!searchable.includes(searchTerm)) return;
+                }
+
+                const tr = document.createElement("tr");
+
+                // Build detail string
+                let details = [];
+                if (row.city) details.push(row.city);
+                if (row.email) details.push(row.email);
+                if (row.mobile) details.push(row.mobile);
+                if (row.license_plate) details.push(row.license_plate);
+
+                tr.innerHTML = `
+                    <td>
+                        <span class="type-badge">${row.type}</span><br>
+                        <strong>${row.name}</strong>
+                        ${details.length ? '<div style="font-size: 10px; color: #888; margin-top: 4px;">' + details.slice(0, 2).join(' | ') + '</div>' : ''}
+                    </td>
+                    <td style="color: var(--neon-cyan); font-size: 11px;">${row.relation}</td>
+                    <td>${row.source}</td>
+                    <td>
+                        <button class="btn-icon btn-edit" onclick="loadEntryForEdit(${index})">✎</button>
+                        <button class="btn-icon btn-del" onclick="deleteEntry(${index})">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable() {
+            renderTable();
+        }
+
+        // --- CSV IMPORT / EXPORT ---
+        function escapeCSV(value) {
+            if (value === null || value === undefined) return '';
+            const str = String(value);
+            // If contains comma, newline, or quote, wrap in quotes and escape internal quotes
+            if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+
+        function buildCSV(rows) {
+            const data = rows || db;
+            let csv = CSV_COLUMNS.join(',') + '\n';
+
+            data.forEach(row => {
+                const line = CSV_COLUMNS.map(col => escapeCSV(row[col] || '')).join(',');
+                csv += line + '\n';
+            });
+
+            return csv;
+        }
+
+        function rowKey(row) {
+            // Use name, type, relation, source as unique key
+            const parts = [row.name, row.type, row.relation, row.source]
+                .map(v => (v || "").toString().trim().toLowerCase());
+            return parts.join("|");
+        }
+
+        function mergeDedupe(baseRows, addRows) {
+            const map = new Map();
+            baseRows.forEach(r => map.set(rowKey(r), r));
+            addRows.forEach(r => {
+                const k = rowKey(r);
+                if (!map.has(k)) map.set(k, r);
+            });
+            return Array.from(map.values());
+        }
+
         function sanitizeFileName(name) {
-            return name.replace(/[\\/\\:*?"<>|]/g, "_");
+            return name.replace(/[\\/:*?"<>|]/g, "_");
         }
 
         function getExportFileName() {
@@ -385,179 +1321,7 @@
             if (last) last.innerText = config.lastImportName || "-";
         }
 
-        loadConfig();
-        loadDB();
-
-        // --- NAVIGATION ---
-        function showPage(pageId) {
-            // Alle Seiten ausblenden
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            // Gewaehlte Seite anzeigen
-            document.getElementById('page-' + pageId).classList.add('active');
-            
-            // Button aktiv setzen (bisschen Hacky ueber den Text, aber simpel)
-            const btnIndex = pageId === 'input' ? 0 : pageId === 'list' ? 1 : 2;
-            document.querySelectorAll('.nav-btn')[btnIndex].classList.add('active');
-            
-            if(pageId === 'list') renderTable();
-            if(pageId === 'export') {
-                document.getElementById('countDisplay').innerText = db.length;
-                applyConfigToUI();
-            }
-        }
-
-        // --- CRUD LOGIC ---
-
-        function getInputs() {
-            return {
-                name: document.getElementById('inpName').value.trim(),
-                type: document.getElementById('inpType').value,
-                rel: document.getElementById('inpRel').value,
-                id: document.getElementById('inpId').value.trim(),
-                source: document.getElementById('inpSource').value.trim()
-            };
-        }
-
-        function clearInputs() {
-            document.getElementById('inpName').value = "";
-            document.getElementById('inpId').value = "";
-            // Source lassen wir oft stehen, weil man oft mehrere Leute am selben Ort findet!
-            // document.getElementById('inpSource').value = ""; 
-            document.getElementById('inpName').focus();
-        }
-
-        function addEntry() {
-            const data = getInputs();
-            if (!data.name || !data.source) { alert("Name und Fundort sind Pflicht!"); return; }
-
-            const key = rowKey(data);
-            const exists = db.some(row => rowKey(row) === key);
-            if (exists) {
-                alert("ACHTUNG: Dieser Eintrag existiert bereits exakt so in der Datenbank!");
-                return;
-            }
-
-            db.unshift(data); // Vorne anfuegen
-            saveDB();
-            clearInputs();
-            alert("Gespeichert!");
-        }
-
-        function dedupeDB() {
-            const oldLen = db.length;
-            db = mergeDedupe([], db);
-            const newLen = db.length;
-            saveDB();
-            renderTable();
-            alert((oldLen - newLen) + " Duplikate entfernt!");
-        }
-
-        function loadEntryForEdit(index) {
-            const entry = db[index];
-            editIndex = index;
-
-            // Werte in Felder fuellen
-            document.getElementById('inpName').value = entry.name;
-            document.getElementById('inpType').value = entry.type || "Person";
-            document.getElementById('inpRel').value = entry.rel || "SEEN_AT";
-            document.getElementById('inpId').value = entry.id || "";
-            document.getElementById('inpSource').value = entry.source;
-
-            // UI umstellen auf Edit Modus
-            document.getElementById('btnAdd').style.display = 'none';
-            document.getElementById('btnUpdate').style.display = 'block';
-            document.getElementById('btnCancel').style.display = 'block';
-
-            // Zur Input Seite springen
-            showPage('input');
-        }
-
-        function updateEntry() {
-            if (editIndex === null) return;
-            const data = getInputs();
-            
-            if (!data.name || !data.source) { alert("Daten fehlen!"); return; }
-
-            db[editIndex] = data; // Ueberschreiben
-            saveDB();
-            
-            cancelEdit(); // Modus beenden
-            alert("Eintrag aktualisiert!");
-            showPage('list'); // Zurueck zur Liste
-        }
-
-        function cancelEdit() {
-            editIndex = null;
-            clearInputs();
-            document.getElementById('btnAdd').style.display = 'block';
-            document.getElementById('btnUpdate').style.display = 'none';
-            document.getElementById('btnCancel').style.display = 'none';
-        }
-
-        function deleteEntry(index) {
-            if(confirm("Eintrag wirklich l\u00f6schen?")) {
-                db.splice(index, 1);
-                saveDB();
-                renderTable();
-            }
-        }
-
-        // --- TABLE RENDER ---
-        function renderTable() {
-            const tbody = document.querySelector("#dataTable tbody");
-            tbody.innerHTML = "";
-
-            db.forEach((row, index) => {
-                const tr = document.createElement("tr");
-                
-                // HTML fuer die Zeile
-                tr.innerHTML = `
-                    <td>
-                        <span class="type-badge">${row.type}</span><br>
-                        <strong>${row.name}</strong>
-                        <div style="font-size: 10px; color: #888;">${row.id}</div>
-                    </td>
-                    <td style="color: var(--neon-cyan); font-size: 11px;">${row.rel}</td>
-                    <td>${row.source}</td>
-                    <td>
-                        <button class="btn-icon btn-edit" onclick="loadEntryForEdit(${index})">EDIT</button>
-                        <button class="btn-icon btn-del" onclick="deleteEntry(${index})">X</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- CSV IMPORT / EXPORT ---
-        function buildCSV(rows) {
-            const data = rows || db;
-            let csv = "name,type,identifier,relation,source\n";
-            data.forEach(row => {
-                // Kommas in Texten entfernen, um CSV nicht zu killen
-                const c = (t) => (t || "").replace(/,/g, " ");
-                csv += `${c(row.name)},${c(row.type)},${c(row.id)},${c(row.rel)},${c(row.source)}\n`;
-            });
-            return csv;
-        }
-
-        function rowKey(row) {
-            const parts = [row.name, row.type, row.id, row.rel, row.source]
-                .map(v => (v || "").toString().trim().toLowerCase());
-            return parts.join("|");
-        }
-
-        function mergeDedupe(baseRows, addRows) {
-            const map = new Map();
-            baseRows.forEach(r => map.set(rowKey(r), r));
-            addRows.forEach(r => {
-                const k = rowKey(r);
-                if (!map.has(k)) map.set(k, r);
-            });
-            return Array.from(map.values());
-        }
-
+        // --- EXPORT DIALOG ---
         let exportDialogResolve = null;
 
         function openExportDialog(exportName) {
@@ -585,13 +1349,9 @@
             }
         }
 
-        function chooseExportSync() {
-            closeExportDialog({ mode: "sync" });
-        }
-
-        function chooseExportOverwrite() {
-            closeExportDialog({ mode: "export" });
-        }
+        function chooseExportSync() { closeExportDialog({ mode: "sync" }); }
+        function chooseExportOverwrite() { closeExportDialog({ mode: "export" }); }
+        function chooseExportCancel() { closeExportDialog({ mode: "cancel" }); }
 
         function chooseExportRename() {
             const wrap = document.getElementById("exportRenameWrap");
@@ -607,10 +1367,6 @@
             saveConfig();
             applyConfigToUI();
             closeExportDialog({ mode: "export", name: getExportFileName() });
-        }
-
-        function chooseExportCancel() {
-            closeExportDialog({ mode: "cancel" });
         }
 
         async function resolveExportMode() {
@@ -629,7 +1385,9 @@
 
         function exportCSV(opts) {
             const csv = buildCSV(opts && opts.rows ? opts.rows : db);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            // Add BOM for Excel UTF-8 compatibility
+            const bom = '\uFEFF';
+            const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
@@ -637,6 +1395,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         }
 
         async function downloadCSV() {
@@ -665,7 +1424,8 @@
             }
 
             const csv = buildCSV(rows);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const bom = '\uFEFF';
+            const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
             const canShareFiles = typeof File !== "undefined" && navigator.share && navigator.canShare;
 
             if (canShareFiles) {
@@ -681,49 +1441,131 @@
                 return;
             }
 
-            // Fallback: direct download
             exportCSV({ rows: rows, name: decision.name });
+        }
+
+        // --- CSV IMPORT ---
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (inQuotes) {
+                    if (char === '"') {
+                        if (line[i + 1] === '"') {
+                            current += '"';
+                            i++;
+                        } else {
+                            inQuotes = false;
+                        }
+                    } else {
+                        current += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                    } else if (char === ',') {
+                        result.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+            }
+            result.push(current.trim());
+            return result;
         }
 
         function loadCSV(input) {
             const file = input.files[0];
             if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                const text = e.target.result;
-                const lines = text.split('\n');
-                db = [];
-                // Check ob Header existiert
-                let start = lines[0].toLowerCase().includes("name") ? 1 : 0;
-                
-                for(let i=start; i<lines.length; i++) {
+                let text = e.target.result;
+                // Remove BOM if present
+                if (text.charCodeAt(0) === 0xFEFF) {
+                    text = text.slice(1);
+                }
+
+                const lines = text.split(/\r?\n/);
+                const importedData = [];
+
+                // Detect format by checking header
+                const headerLine = lines[0].toLowerCase();
+                const isNewFormat = headerLine.includes('street') || headerLine.includes('birth_date') || lines[0].split(',').length > 10;
+                const isOldFormat = !isNewFormat && (headerLine.includes('identifier') || lines[0].split(',').length <= 5);
+
+                let start = headerLine.includes('name') ? 1 : 0;
+
+                for (let i = start; i < lines.length; i++) {
                     const line = lines[i].trim();
-                    if(line) {
-                        const p = line.split(',');
-                        // Mapping alter CSVs (nur 2 Spalten) vs neuer CSVs (5 Spalten)
-                        if(p.length === 2) {
-                            db.push({ name: p[0], type: "Person", id: "", rel: "SEEN_AT", source: p[1] });
-                        } else if (p.length >= 5) {
-                            db.push({ name: p[0], type: p[1], id: p[2], rel: p[3], source: p[4] });
+                    if (!line) continue;
+
+                    const parts = parseCSVLine(line);
+
+                    if (isOldFormat && parts.length >= 2 && parts.length <= 5) {
+                        // Old format: name, type, identifier, relation, source
+                        const entry = createEmptyEntry();
+                        entry.name = parts[0] || '';
+                        entry.type = parts[1] || 'Person';
+                        const identifier = parts[2] || '';
+                        entry.relation = parts[3] || 'SEEN_AT';
+                        entry.source = parts[4] || parts[1] || ''; // Fallback to type if no source
+
+                        // Map identifier based on type
+                        if (entry.type === 'Fahrzeug' && identifier) {
+                            entry.license_plate = identifier;
+                        } else if (identifier) {
+                            entry.info_source = identifier;
                         }
+
+                        importedData.push(entry);
+                    } else if (parts.length >= CSV_COLUMNS.length) {
+                        // New format: all 47 columns
+                        const entry = createEmptyEntry();
+                        CSV_COLUMNS.forEach((col, idx) => {
+                            entry[col] = parts[idx] || '';
+                        });
+                        importedData.push(entry);
+                    } else if (parts.length >= 4) {
+                        // Partial new format - map what we have
+                        const entry = createEmptyEntry();
+                        CSV_COLUMNS.forEach((col, idx) => {
+                            if (parts[idx] !== undefined) {
+                                entry[col] = parts[idx];
+                            }
+                        });
+                        importedData.push(entry);
                     }
                 }
-                config.lastImportName = file.name || "";
-                config.lastImportedDb = db.slice();
-                saveConfig();
-                saveDB();
-                alert(db.length + " Datens\u00e4tze geladen!");
-                showPage('list');
+
+                if (importedData.length > 0) {
+                    db = importedData;
+                    config.lastImportName = file.name || "";
+                    config.lastImportedDb = db.slice();
+                    saveConfig();
+                    saveDB();
+                    alert(db.length + " Datensätze geladen!");
+                    showPage('list');
+                } else {
+                    alert("Keine gültigen Daten in der Datei gefunden.");
+                }
             };
-            reader.readAsText(file);
+            reader.readAsText(file, 'UTF-8');
         }
 
+        // --- EVENT LISTENERS ---
         document.getElementById("exportFileName").addEventListener("input", (e) => {
             config.exportFileName = e.target.value;
             saveConfig();
         });
 
-        applyConfigToUI();
+        // Initialize
+        init();
     </script>
 </body>
 </html>
