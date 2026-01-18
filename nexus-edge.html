@@ -89,7 +89,7 @@
 
         /* INPUT FORMS */
         .input-group { margin-bottom: 15px; }
-        .label {
+        .input-label {
             color: var(--neon-cyan);
             font-size: 11px;
             margin-bottom: 5px;
@@ -97,7 +97,7 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .label.required::after {
+        .input-label.required::after {
             content: " *";
             color: var(--neon-red);
         }
@@ -124,7 +124,8 @@
             box-shadow: 0 0 5px var(--neon-yellow);
         }
 
-        input.error, select.error {
+        /* Used dynamically via JavaScript */
+        input.input-error, select.input-error {
             border-color: var(--neon-red);
             box-shadow: 0 0 5px var(--neon-red);
         }
@@ -220,7 +221,7 @@
         .btn-update { background: var(--neon-yellow); color: #000; display: none; }
         .btn-cancel { background: #333; color: #fff; margin-top: 5px; display: none;}
 
-        /* SCROLL TO TOP */
+        /* SCROLL TO TOP - class added via JavaScript */
         .scroll-top-btn {
             position: fixed;
             bottom: 20px;
@@ -239,7 +240,7 @@
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
         }
 
-        .scroll-top-btn.visible {
+        .scroll-top-btn.is-visible {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -370,27 +371,27 @@
 </head>
 <body>
 
-    <div class="nav-bar">
+    <nav class="nav-bar">
         <button class="nav-btn active" onclick="showPage('input')">INPUT</button>
         <button class="nav-btn" onclick="showPage('list')">DATABASE <span id="navCount" class="count-badge" style="display:none;">0</span></button>
         <button class="nav-btn" onclick="showPage('export')">EXPORT</button>
-    </div>
+    </nav>
 
     <!-- INPUT PAGE -->
-    <div id="page-input" class="page active">
+    <main id="page-input" class="page active">
 
         <!-- REQUIRED FIELDS SECTION -->
-        <div class="required-section">
+        <section class="required-section">
             <div class="section-title">// PFLICHTFELDER</div>
 
             <div class="input-group">
-                <span class="label required">Node 1: Entity Name</span>
+                <label class="input-label required" for="inpName">Node 1: Entity Name</label>
                 <input type="text" id="inpName" placeholder="z.B. Max Mustermann, Firma XYZ...">
             </div>
 
             <div class="grid-2">
                 <div class="input-group">
-                    <span class="label">Typ</span>
+                    <label class="input-label" for="inpType">Typ</label>
                     <select id="inpType" onchange="updateDynamicFields()">
                         <option value="Person">Person</option>
                         <option value="Firma">Firma</option>
@@ -404,7 +405,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <span class="label required">Relationship</span>
+                    <label class="input-label required" for="inpRel">Relationship</label>
                     <select id="inpRel">
                         <option value="MEMBER_OF">MEMBER_OF</option>
                         <option value="FRIEND_OF">FRIEND_OF</option>
@@ -430,26 +431,26 @@
             </div>
 
             <div class="input-group">
-                <span class="label required">Node 2: Source</span>
+                <label class="input-label required" for="inpSource">Node 2: Source</label>
                 <input type="text" id="inpSource" placeholder="z.B. LinkedIn, Facebook Gruppe, Handelsregister...">
             </div>
-        </div>
+        </section>
 
         <!-- PERSON SPECIFIC FIELDS -->
         <div id="section-person" class="dynamic-section">
             <div class="collapsible open">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
                     <span class="collapsible-title">// Person Details</span>
-                    <span class="collapsible-icon">▼</span>
+                    <span class="collapsible-icon">&#9660;</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="grid-2">
                         <div class="input-group">
-                            <span class="label">Geburtsdatum</span>
+                            <label class="input-label" for="inpBirthDate">Geburtsdatum</label>
                             <input type="date" id="inpBirthDate">
                         </div>
                         <div class="input-group">
-                            <span class="label">Geschlecht</span>
+                            <label class="input-label" for="inpGender">Geschlecht</label>
                             <select id="inpGender">
                                 <option value="">-- Auswählen --</option>
                                 <option value="männlich">männlich</option>
@@ -461,11 +462,11 @@
                     </div>
                     <div class="grid-3">
                         <div class="input-group">
-                            <span class="label">Größe (cm)</span>
+                            <label class="input-label" for="inpHeight">Größe (cm)</label>
                             <input type="number" id="inpHeight" placeholder="182">
                         </div>
                         <div class="input-group">
-                            <span class="label">Haarfarbe</span>
+                            <label class="input-label" for="inpHairColor">Haarfarbe</label>
                             <select id="inpHairColor">
                                 <option value="">--</option>
                                 <option value="schwarz">schwarz</option>
@@ -479,7 +480,7 @@
                             </select>
                         </div>
                         <div class="input-group">
-                            <span class="label">Augenfarbe</span>
+                            <label class="input-label" for="inpEyeColor">Augenfarbe</label>
                             <select id="inpEyeColor">
                                 <option value="">--</option>
                                 <option value="braun">braun</option>
@@ -492,11 +493,11 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <span class="label">Nationalität</span>
+                        <label class="input-label" for="inpNationality">Nationalität</label>
                         <input type="text" id="inpNationality" placeholder="z.B. Deutsch">
                     </div>
                     <div class="input-group">
-                        <span class="label">Besondere Merkmale</span>
+                        <label class="input-label" for="inpDistinctiveFeatures">Besondere Merkmale</label>
                         <textarea id="inpDistinctiveFeatures" placeholder="Narben, Tattoos, etc."></textarea>
                     </div>
                 </div>
@@ -508,16 +509,16 @@
             <div class="collapsible open">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
                     <span class="collapsible-title">// Organisation Details</span>
-                    <span class="collapsible-icon">▼</span>
+                    <span class="collapsible-icon">&#9660;</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="grid-2">
                         <div class="input-group">
-                            <span class="label">Gründungsdatum</span>
+                            <label class="input-label" for="inpFoundingDate">Gründungsdatum</label>
                             <input type="date" id="inpFoundingDate">
                         </div>
                         <div class="input-group">
-                            <span class="label">Rechtsform</span>
+                            <label class="input-label" for="inpLegalForm">Rechtsform</label>
                             <select id="inpLegalForm">
                                 <option value="">-- Auswählen --</option>
                                 <option value="GmbH">GmbH</option>
@@ -534,21 +535,21 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <span class="label">Registernummer</span>
+                        <label class="input-label" for="inpRegistrationNumber">Registernummer</label>
                         <input type="text" id="inpRegistrationNumber" placeholder="HRB 12345">
                     </div>
                     <div class="grid-2">
                         <div class="input-group">
-                            <span class="label">Branche</span>
+                            <label class="input-label" for="inpIndustry">Branche</label>
                             <input type="text" id="inpIndustry" placeholder="IT, Handel, etc.">
                         </div>
                         <div class="input-group">
-                            <span class="label">Mitarbeiteranzahl</span>
+                            <label class="input-label" for="inpEmployeeCount">Mitarbeiteranzahl</label>
                             <input type="text" id="inpEmployeeCount" placeholder="10-50">
                         </div>
                     </div>
                     <div class="input-group">
-                        <span class="label">Webseite</span>
+                        <label class="input-label" for="inpWebsite">Webseite</label>
                         <input type="url" id="inpWebsite" placeholder="https://example.de">
                     </div>
                 </div>
@@ -560,34 +561,34 @@
             <div class="collapsible open">
                 <div class="collapsible-header" onclick="toggleCollapsible(this)">
                     <span class="collapsible-title">// Fahrzeug Details</span>
-                    <span class="collapsible-icon">▼</span>
+                    <span class="collapsible-icon">&#9660;</span>
                 </div>
                 <div class="collapsible-content">
                     <div class="input-group">
-                        <span class="label">Kennzeichen</span>
-                        <input type="text" id="inpLicensePlate" placeholder="B-AB 1234" style="text-transform: uppercase;">
+                        <label class="input-label" for="inpLicensePlate">Kennzeichen</label>
+                        <input type="text" id="inpLicensePlate" placeholder="B-AB 1234">
                     </div>
                     <div class="grid-2">
                         <div class="input-group">
-                            <span class="label">Marke</span>
+                            <label class="input-label" for="inpVehicleMake">Marke</label>
                             <input type="text" id="inpVehicleMake" placeholder="BMW, VW, etc.">
                         </div>
                         <div class="input-group">
-                            <span class="label">Modell</span>
+                            <label class="input-label" for="inpVehicleModel">Modell</label>
                             <input type="text" id="inpVehicleModel" placeholder="3er, Golf, etc.">
                         </div>
                     </div>
                     <div class="grid-3">
                         <div class="input-group">
-                            <span class="label">Farbe</span>
+                            <label class="input-label" for="inpVehicleColor">Farbe</label>
                             <input type="text" id="inpVehicleColor" placeholder="schwarz">
                         </div>
                         <div class="input-group">
-                            <span class="label">Baujahr</span>
+                            <label class="input-label" for="inpVehicleYear">Baujahr</label>
                             <input type="number" id="inpVehicleYear" placeholder="2020">
                         </div>
                         <div class="input-group">
-                            <span class="label">FIN/VIN</span>
+                            <label class="input-label" for="inpVin">FIN/VIN</label>
                             <input type="text" id="inpVin" placeholder="WBA...">
                         </div>
                     </div>
@@ -599,37 +600,35 @@
         <div class="collapsible">
             <div class="collapsible-header" onclick="toggleCollapsible(this)">
                 <span class="collapsible-title">// Adresse</span>
-                <span class="collapsible-icon">▼</span>
+                <span class="collapsible-icon">&#9660;</span>
             </div>
             <div class="collapsible-content">
-                <div class="grid-2">
-                    <div class="input-group" style="grid-column: 1 / -1;">
-                        <span class="label">Straße</span>
-                        <input type="text" id="inpStreet" placeholder="Hauptstraße">
-                    </div>
+                <div class="input-group">
+                    <label class="input-label" for="inpStreet">Straße</label>
+                    <input type="text" id="inpStreet" placeholder="Hauptstraße">
                 </div>
                 <div class="grid-3">
                     <div class="input-group">
-                        <span class="label">Hausnr.</span>
+                        <label class="input-label" for="inpHouseNumber">Hausnr.</label>
                         <input type="text" id="inpHouseNumber" placeholder="123">
                     </div>
                     <div class="input-group" style="grid-column: span 2;">
-                        <span class="label">Zusatz</span>
+                        <label class="input-label" for="inpAddressExtra">Zusatz</label>
                         <input type="text" id="inpAddressExtra" placeholder="Hinterhaus, 2. OG">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="input-group">
-                        <span class="label">PLZ</span>
+                        <label class="input-label" for="inpPostalCode">PLZ</label>
                         <input type="text" id="inpPostalCode" placeholder="12345">
                     </div>
                     <div class="input-group" style="grid-column: span 2;">
-                        <span class="label">Stadt/Ort</span>
+                        <label class="input-label" for="inpCity">Stadt/Ort</label>
                         <input type="text" id="inpCity" placeholder="Berlin">
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="label">Land</span>
+                    <label class="input-label" for="inpCountry">Land</label>
                     <input type="text" id="inpCountry" placeholder="Deutschland" value="Deutschland">
                 </div>
             </div>
@@ -639,26 +638,26 @@
         <div class="collapsible">
             <div class="collapsible-header" onclick="toggleCollapsible(this)">
                 <span class="collapsible-title">// Kontakt</span>
-                <span class="collapsible-icon">▼</span>
+                <span class="collapsible-icon">&#9660;</span>
             </div>
             <div class="collapsible-content">
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">Telefon (Festnetz)</span>
+                        <label class="input-label" for="inpPhone">Telefon (Festnetz)</label>
                         <input type="tel" id="inpPhone" placeholder="+49 30 12345678">
                     </div>
                     <div class="input-group">
-                        <span class="label">Mobil</span>
+                        <label class="input-label" for="inpMobile">Mobil</label>
                         <input type="tel" id="inpMobile" placeholder="+49 170 1234567">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">Fax</span>
+                        <label class="input-label" for="inpFax">Fax</label>
                         <input type="tel" id="inpFax" placeholder="+49 30 12345679">
                     </div>
                     <div class="input-group">
-                        <span class="label">E-Mail</span>
+                        <label class="input-label" for="inpEmail">E-Mail</label>
                         <input type="email" id="inpEmail" placeholder="mail@example.de">
                     </div>
                 </div>
@@ -669,66 +668,66 @@
         <div class="collapsible">
             <div class="collapsible-header" onclick="toggleCollapsible(this)">
                 <span class="collapsible-title">// Social Media</span>
-                <span class="collapsible-icon">▼</span>
+                <span class="collapsible-icon">&#9660;</span>
             </div>
             <div class="collapsible-content">
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">Facebook</span>
+                        <label class="input-label" for="inpFacebook">Facebook</label>
                         <input type="text" id="inpFacebook" placeholder="URL oder Username">
                     </div>
                     <div class="input-group">
-                        <span class="label">Instagram</span>
+                        <label class="input-label" for="inpInstagram">Instagram</label>
                         <input type="text" id="inpInstagram" placeholder="@username">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">TikTok</span>
+                        <label class="input-label" for="inpTiktok">TikTok</label>
                         <input type="text" id="inpTiktok" placeholder="@username">
                     </div>
                     <div class="input-group">
-                        <span class="label">Twitter/X</span>
+                        <label class="input-label" for="inpTwitter">Twitter/X</label>
                         <input type="text" id="inpTwitter" placeholder="@username">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">LinkedIn</span>
+                        <label class="input-label" for="inpLinkedin">LinkedIn</label>
                         <input type="text" id="inpLinkedin" placeholder="URL">
                     </div>
                     <div class="input-group">
-                        <span class="label">XING</span>
+                        <label class="input-label" for="inpXing">XING</label>
                         <input type="text" id="inpXing" placeholder="URL">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">YouTube</span>
+                        <label class="input-label" for="inpYoutube">YouTube</label>
                         <input type="text" id="inpYoutube" placeholder="Kanal-URL">
                     </div>
                     <div class="input-group">
-                        <span class="label">Telegram</span>
+                        <label class="input-label" for="inpTelegram">Telegram</label>
                         <input type="text" id="inpTelegram" placeholder="@username">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">WhatsApp</span>
+                        <label class="input-label" for="inpWhatsapp">WhatsApp</label>
                         <input type="text" id="inpWhatsapp" placeholder="+49...">
                     </div>
                     <div class="input-group">
-                        <span class="label">Signal</span>
+                        <label class="input-label" for="inpSignal">Signal</label>
                         <input type="text" id="inpSignal" placeholder="+49...">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="input-group">
-                        <span class="label">Snapchat</span>
+                        <label class="input-label" for="inpSnapchat">Snapchat</label>
                         <input type="text" id="inpSnapchat" placeholder="@username">
                     </div>
                     <div class="input-group">
-                        <span class="label">Discord</span>
+                        <label class="input-label" for="inpDiscord">Discord</label>
                         <input type="text" id="inpDiscord" placeholder="username#1234">
                     </div>
                 </div>
@@ -739,29 +738,30 @@
         <div class="collapsible">
             <div class="collapsible-header" onclick="toggleCollapsible(this)">
                 <span class="collapsible-title">// Meta / Notizen</span>
-                <span class="collapsible-icon">▼</span>
+                <span class="collapsible-icon">&#9660;</span>
             </div>
             <div class="collapsible-content">
                 <div class="input-group">
-                    <span class="label">Informationsquelle</span>
+                    <label class="input-label" for="inpInfoSource">Informationsquelle</label>
                     <input type="text" id="inpInfoSource" placeholder="Woher stammt diese Info?">
                 </div>
                 <div class="input-group">
-                    <span class="label">Notizen</span>
+                    <label class="input-label" for="inpNotes">Notizen</label>
                     <textarea id="inpNotes" placeholder="Zusätzliche Informationen..."></textarea>
                 </div>
             </div>
         </div>
 
         <!-- ACTION BUTTONS -->
-        <button id="btnAdd" class="btn-action btn-add" onclick="addEntry()">>> SAVE TO MEMORY <<</button>
-        <button id="btnUpdate" class="btn-action btn-update" onclick="updateEntry()">>> UPDATE ENTRY <<</button>
+        <button id="btnAdd" class="btn-action btn-add" onclick="addEntry()">&gt;&gt; SAVE TO MEMORY &lt;&lt;</button>
+        <button id="btnUpdate" class="btn-action btn-update" onclick="updateEntry()">&gt;&gt; UPDATE ENTRY &lt;&lt;</button>
         <button id="btnCancel" class="btn-action btn-cancel" onclick="cancelEdit()">ABBRECHEN</button>
-    </div>
+    </main>
 
     <!-- DATABASE PAGE -->
-    <div id="page-list" class="page">
+    <main id="page-list" class="page">
         <div class="search-box">
+            <label class="input-label" for="searchInput">Suche</label>
             <input type="text" id="searchInput" placeholder="Suchen..." oninput="filterTable()">
         </div>
 
@@ -789,10 +789,10 @@
             <button class="btn-action btn-add" style="background: #333; color: #aaa; font-size: 12px; margin-top: 15px;" onclick="dedupeDB()">[ DUPLIKATE ENTFERNEN ]</button>
             <button class="btn-action btn-add" style="background: var(--neon-red); font-size: 12px; margin-top: 5px;" onclick="clearAllData()">[ ALLE DATEN LÖSCHEN ]</button>
         </div>
-    </div>
+    </main>
 
     <!-- EXPORT PAGE -->
-    <div id="page-export" class="page">
+    <main id="page-export" class="page">
         <div class="info-box">
             STATUS: <span id="countDisplay">0</span> Datensätze im Speicher.<br><br>
             Format: CSV (UTF-8)<br>
@@ -802,23 +802,24 @@
         <button class="btn-action btn-add" style="background: var(--neon-yellow);" onclick="downloadCSV()">[ DOWNLOAD CSV ]</button>
 
         <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;">
-            <span class="label" style="color: var(--neon-cyan);">KONFIGURATION</span>
+            <div class="section-title">Konfiguration</div>
             <div class="input-group" style="margin-top: 10px;">
-                <span class="label">Export-Dateiname</span>
+                <label class="input-label" for="exportFileName">Export-Dateiname</label>
                 <input type="text" id="exportFileName" placeholder="osint_data.csv">
             </div>
             <div style="font-size: 12px; color: #777;">Letzte Import-Datei: <span id="lastImportName">-</span></div>
         </div>
 
         <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
-            <span class="label" style="color: var(--neon-cyan);">CSV IMPORTIEREN</span>
+            <div class="section-title">CSV Importieren</div>
             <p style="font-size: 11px; color: #666; margin: 10px 0;">Unterstützt altes (5 Spalten) und neues Format (47 Spalten)</p>
-            <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(this)" style="margin-top: 5px;">
+            <label class="input-label" for="fileInput">Datei auswählen</label>
+            <input type="file" id="fileInput" accept=".csv" onchange="loadCSV(this)">
         </div>
-    </div>
+    </main>
 
     <!-- SCROLL TO TOP BUTTON -->
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">↑</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" aria-label="Nach oben scrollen">&#8593;</button>
 
     <!-- EXPORT DIALOG -->
     <div id="exportDialog" class="modal-overlay" aria-hidden="true">
@@ -830,7 +831,7 @@
             </div>
             <div id="exportRenameWrap" style="display: none;">
                 <div class="input-group" style="margin-bottom: 10px;">
-                    <span class="label">NEUER DATEINAME</span>
+                    <label class="input-label" for="exportRenameInput">Neuer Dateiname</label>
                     <input type="text" id="exportRenameInput" placeholder="osint_data.csv">
                 </div>
                 <button class="btn-modal btn-overwrite" onclick="confirmRenameExport()">UMBENENNEN</button>
@@ -938,27 +939,27 @@
             try {
                 const raw = localStorage.getItem(CONFIG_KEY);
                 if (raw) {
-                    const data = JSON.parse(raw);
-                    if (data && typeof data === "object") {
-                        config = Object.assign({}, config, data);
+                    const parsed = JSON.parse(raw);
+                    if (parsed && typeof parsed === "object") {
+                        config = Object.assign({}, config, parsed);
                     }
                 }
-            } catch (e) {}
+            } catch (e) { /* ignore */ }
         }
 
         function saveConfig() {
             try {
                 localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-            } catch (e) {}
+            } catch (e) { /* ignore */ }
         }
 
         function loadDB() {
             try {
                 const raw = localStorage.getItem(DB_KEY);
                 if (raw) {
-                    const data = JSON.parse(raw);
-                    if (Array.isArray(data)) {
-                        db = data;
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        db = parsed;
                     }
                 }
                 // Try to migrate from old format
@@ -972,25 +973,23 @@
                         }
                     }
                 }
-            } catch (e) {}
+            } catch (e) { /* ignore */ }
         }
 
         function saveDB() {
             try {
                 localStorage.setItem(DB_KEY, JSON.stringify(db));
                 updateNavCount();
-            } catch (e) {}
+            } catch (e) { /* ignore */ }
         }
 
         function migrateOldEntry(old) {
-            // Convert old 5-field format to new 47-field format
             const entry = createEmptyEntry();
             entry.name = old.name || '';
             entry.type = old.type || 'Person';
             entry.relation = old.rel || 'SEEN_AT';
             entry.source = old.source || '';
 
-            // Map old 'id' field based on type
             if (old.id) {
                 if (old.type === 'Fahrzeug') {
                     entry.license_plate = old.id;
@@ -1003,7 +1002,7 @@
 
         function createEmptyEntry() {
             const entry = {};
-            CSV_COLUMNS.forEach(col => {
+            CSV_COLUMNS.forEach(function(col) {
                 entry[col] = '';
             });
             entry.country = 'Deutschland';
@@ -1012,8 +1011,8 @@
 
         // --- NAVIGATION ---
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
 
             document.getElementById('page-' + pageId).classList.add('active');
 
@@ -1041,13 +1040,11 @@
         function updateDynamicFields() {
             const type = document.getElementById('inpType').value;
 
-            // Hide all dynamic sections
-            document.querySelectorAll('.dynamic-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.dynamic-section').forEach(function(s) { s.classList.remove('active'); });
 
-            // Show relevant section
             if (type === 'Person') {
                 document.getElementById('section-person').classList.add('active');
-            } else if (ORG_TYPES.includes(type)) {
+            } else if (ORG_TYPES.indexOf(type) !== -1) {
                 document.getElementById('section-org').classList.add('active');
             } else if (type === 'Fahrzeug') {
                 document.getElementById('section-vehicle').classList.add('active');
@@ -1056,18 +1053,17 @@
 
         // --- COLLAPSIBLE SECTIONS ---
         function toggleCollapsible(header) {
-            const collapsible = header.parentElement;
-            collapsible.classList.toggle('open');
+            header.parentElement.classList.toggle('open');
         }
 
         // --- SCROLL TO TOP ---
         function setupScrollListener() {
-            window.addEventListener('scroll', () => {
+            window.addEventListener('scroll', function() {
                 const btn = document.getElementById('scrollTopBtn');
                 if (window.scrollY > 300) {
-                    btn.classList.add('visible');
+                    btn.classList.add('is-visible');
                 } else {
-                    btn.classList.remove('visible');
+                    btn.classList.remove('is-visible');
                 }
             });
         }
@@ -1080,10 +1076,12 @@
         function getInputs() {
             const entry = createEmptyEntry();
 
-            for (const [inputId, dataKey] of Object.entries(FIELD_MAP)) {
-                const el = document.getElementById(inputId);
-                if (el) {
-                    entry[dataKey] = el.value.trim();
+            for (var inputId in FIELD_MAP) {
+                if (FIELD_MAP.hasOwnProperty(inputId)) {
+                    var el = document.getElementById(inputId);
+                    if (el) {
+                        entry[FIELD_MAP[inputId]] = el.value.trim();
+                    }
                 }
             }
 
@@ -1091,40 +1089,40 @@
         }
 
         function setInputs(entry) {
-            for (const [inputId, dataKey] of Object.entries(FIELD_MAP)) {
-                const el = document.getElementById(inputId);
-                if (el) {
-                    el.value = entry[dataKey] || '';
+            for (var inputId in FIELD_MAP) {
+                if (FIELD_MAP.hasOwnProperty(inputId)) {
+                    var el = document.getElementById(inputId);
+                    if (el) {
+                        el.value = entry[FIELD_MAP[inputId]] || '';
+                    }
                 }
             }
             updateDynamicFields();
         }
 
         function clearInputs() {
-            const entry = createEmptyEntry();
-            // Keep source (often same for multiple entries)
-            const currentSource = document.getElementById('inpSource').value;
+            var entry = createEmptyEntry();
+            var currentSource = document.getElementById('inpSource').value;
 
             setInputs(entry);
 
             document.getElementById('inpSource').value = currentSource;
             document.getElementById('inpName').focus();
 
-            // Clear error states
-            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.input-error').forEach(function(el) { el.classList.remove('input-error'); });
         }
 
         function validateRequired() {
-            let valid = true;
-            const requiredFields = ['inpName', 'inpRel', 'inpSource'];
+            var valid = true;
+            var requiredFields = ['inpName', 'inpRel', 'inpSource'];
 
-            requiredFields.forEach(id => {
-                const el = document.getElementById(id);
+            requiredFields.forEach(function(id) {
+                var el = document.getElementById(id);
                 if (!el.value.trim()) {
-                    el.classList.add('error');
+                    el.classList.add('input-error');
                     valid = false;
                 } else {
-                    el.classList.remove('error');
+                    el.classList.remove('input-error');
                 }
             });
 
@@ -1137,23 +1135,23 @@
                 return;
             }
 
-            const data = getInputs();
-            const key = rowKey(data);
-            const exists = db.some(row => rowKey(row) === key);
+            var entry = getInputs();
+            var key = rowKey(entry);
+            var exists = db.some(function(row) { return rowKey(row) === key; });
 
             if (exists) {
                 alert("ACHTUNG: Dieser Eintrag existiert bereits!");
                 return;
             }
 
-            db.unshift(data);
+            db.unshift(entry);
             saveDB();
             clearInputs();
             alert("Gespeichert!");
         }
 
         function loadEntryForEdit(index) {
-            const entry = db[index];
+            var entry = db[index];
             editIndex = index;
 
             setInputs(entry);
@@ -1174,8 +1172,7 @@
                 return;
             }
 
-            const data = getInputs();
-            db[editIndex] = data;
+            db[editIndex] = getInputs();
             saveDB();
 
             cancelEdit();
@@ -1211,9 +1208,9 @@
         }
 
         function dedupeDB() {
-            const oldLen = db.length;
+            var oldLen = db.length;
             db = mergeDedupe([], db);
-            const newLen = db.length;
+            var newLen = db.length;
             saveDB();
             renderTable();
             alert((oldLen - newLen) + " Duplikate entfernt!");
@@ -1221,40 +1218,37 @@
 
         // --- TABLE RENDER ---
         function renderTable() {
-            const tbody = document.querySelector("#dataTable tbody");
+            var tbody = document.querySelector("#dataTable tbody");
             tbody.innerHTML = "";
 
-            const searchTerm = (document.getElementById('searchInput').value || '').toLowerCase();
+            var searchTerm = (document.getElementById('searchInput').value || '').toLowerCase();
 
-            db.forEach((row, index) => {
-                // Filter
+            db.forEach(function(row, index) {
                 if (searchTerm) {
-                    const searchable = [row.name, row.type, row.relation, row.source, row.city, row.email].join(' ').toLowerCase();
-                    if (!searchable.includes(searchTerm)) return;
+                    var searchable = [row.name, row.type, row.relation, row.source, row.city, row.email].join(' ').toLowerCase();
+                    if (searchable.indexOf(searchTerm) === -1) return;
                 }
 
-                const tr = document.createElement("tr");
+                var tr = document.createElement("tr");
 
-                // Build detail string
-                let details = [];
+                var details = [];
                 if (row.city) details.push(row.city);
                 if (row.email) details.push(row.email);
                 if (row.mobile) details.push(row.mobile);
                 if (row.license_plate) details.push(row.license_plate);
 
-                tr.innerHTML = `
-                    <td>
-                        <span class="type-badge">${row.type}</span><br>
-                        <strong>${row.name}</strong>
-                        ${details.length ? '<div style="font-size: 10px; color: #888; margin-top: 4px;">' + details.slice(0, 2).join(' | ') + '</div>' : ''}
-                    </td>
-                    <td style="color: var(--neon-cyan); font-size: 11px;">${row.relation}</td>
-                    <td>${row.source}</td>
-                    <td>
-                        <button class="btn-icon btn-edit" onclick="loadEntryForEdit(${index})">✎</button>
-                        <button class="btn-icon btn-del" onclick="deleteEntry(${index})">✕</button>
-                    </td>
-                `;
+                tr.innerHTML =
+                    '<td>' +
+                        '<span class="type-badge">' + row.type + '</span><br>' +
+                        '<strong>' + row.name + '</strong>' +
+                        (details.length ? '<div style="font-size: 10px; color: #888; margin-top: 4px;">' + details.slice(0, 2).join(' | ') + '</div>' : '') +
+                    '</td>' +
+                    '<td style="color: var(--neon-cyan); font-size: 11px;">' + row.relation + '</td>' +
+                    '<td>' + row.source + '</td>' +
+                    '<td>' +
+                        '<button class="btn-icon btn-edit" onclick="loadEntryForEdit(' + index + ')">&#9998;</button>' +
+                        '<button class="btn-icon btn-del" onclick="deleteEntry(' + index + ')">&#10005;</button>' +
+                    '</td>';
                 tbody.appendChild(tr);
             });
         }
@@ -1266,20 +1260,19 @@
         // --- CSV IMPORT / EXPORT ---
         function escapeCSV(value) {
             if (value === null || value === undefined) return '';
-            const str = String(value);
-            // If contains comma, newline, or quote, wrap in quotes and escape internal quotes
-            if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+            var str = String(value);
+            if (str.indexOf(',') !== -1 || str.indexOf('\n') !== -1 || str.indexOf('"') !== -1) {
                 return '"' + str.replace(/"/g, '""') + '"';
             }
             return str;
         }
 
         function buildCSV(rows) {
-            const data = rows || db;
-            let csv = CSV_COLUMNS.join(',') + '\n';
+            var data = rows || db;
+            var csv = CSV_COLUMNS.join(',') + '\n';
 
-            data.forEach(row => {
-                const line = CSV_COLUMNS.map(col => escapeCSV(row[col] || '')).join(',');
+            data.forEach(function(row) {
+                var line = CSV_COLUMNS.map(function(col) { return escapeCSV(row[col] || ''); }).join(',');
                 csv += line + '\n';
             });
 
@@ -1287,17 +1280,16 @@
         }
 
         function rowKey(row) {
-            // Use name, type, relation, source as unique key
-            const parts = [row.name, row.type, row.relation, row.source]
-                .map(v => (v || "").toString().trim().toLowerCase());
+            var parts = [row.name, row.type, row.relation, row.source]
+                .map(function(v) { return (v || "").toString().trim().toLowerCase(); });
             return parts.join("|");
         }
 
         function mergeDedupe(baseRows, addRows) {
-            const map = new Map();
-            baseRows.forEach(r => map.set(rowKey(r), r));
-            addRows.forEach(r => {
-                const k = rowKey(r);
+            var map = new Map();
+            baseRows.forEach(function(r) { map.set(rowKey(r), r); });
+            addRows.forEach(function(r) {
+                var k = rowKey(r);
                 if (!map.has(k)) map.set(k, r);
             });
             return Array.from(map.values());
@@ -1308,29 +1300,29 @@
         }
 
         function getExportFileName() {
-            let name = (config.exportFileName || "").trim();
+            var name = (config.exportFileName || "").trim();
             if (!name) name = "osint_data.csv";
             if (!/\.csv$/i.test(name)) name += ".csv";
             return sanitizeFileName(name);
         }
 
         function applyConfigToUI() {
-            const input = document.getElementById("exportFileName");
+            var input = document.getElementById("exportFileName");
             if (input) input.value = config.exportFileName || "";
-            const last = document.getElementById("lastImportName");
+            var last = document.getElementById("lastImportName");
             if (last) last.innerText = config.lastImportName || "-";
         }
 
         // --- EXPORT DIALOG ---
-        let exportDialogResolve = null;
+        var exportDialogResolve = null;
 
         function openExportDialog(exportName) {
-            return new Promise((resolve) => {
+            return new Promise(function(resolve) {
                 exportDialogResolve = resolve;
-                const modal = document.getElementById("exportDialog");
-                const nameEl = document.getElementById("exportDialogName");
-                const wrap = document.getElementById("exportRenameWrap");
-                const input = document.getElementById("exportRenameInput");
+                var modal = document.getElementById("exportDialog");
+                var nameEl = document.getElementById("exportDialogName");
+                var wrap = document.getElementById("exportRenameWrap");
+                var input = document.getElementById("exportRenameInput");
                 nameEl.innerText = exportName;
                 wrap.style.display = "none";
                 input.value = exportName;
@@ -1340,7 +1332,7 @@
         }
 
         function closeExportDialog(result) {
-            const modal = document.getElementById("exportDialog");
+            var modal = document.getElementById("exportDialog");
             modal.classList.remove("active");
             modal.setAttribute("aria-hidden", "true");
             if (exportDialogResolve) {
@@ -1354,14 +1346,14 @@
         function chooseExportCancel() { closeExportDialog({ mode: "cancel" }); }
 
         function chooseExportRename() {
-            const wrap = document.getElementById("exportRenameWrap");
+            var wrap = document.getElementById("exportRenameWrap");
             wrap.style.display = "block";
             document.getElementById("exportRenameInput").focus();
         }
 
         function confirmRenameExport() {
-            const input = document.getElementById("exportRenameInput");
-            const newName = (input.value || "").trim();
+            var input = document.getElementById("exportRenameInput");
+            var newName = (input.value || "").trim();
             if (!newName) return;
             config.exportFileName = newName;
             saveConfig();
@@ -1369,27 +1361,27 @@
             closeExportDialog({ mode: "export", name: getExportFileName() });
         }
 
-        async function resolveExportMode() {
-            const exportName = getExportFileName();
-            const lastName = (config.lastImportName || "").trim();
-            const hasLast = Array.isArray(config.lastImportedDb) && config.lastImportedDb.length > 0;
-            if (!lastName || !hasLast) return { mode: "export", name: exportName };
-            if (lastName.toLowerCase() !== exportName.toLowerCase()) return { mode: "export", name: exportName };
+        function resolveExportMode() {
+            var exportName = getExportFileName();
+            var lastName = (config.lastImportName || "").trim();
+            var hasLast = Array.isArray(config.lastImportedDb) && config.lastImportedDb.length > 0;
+            if (!lastName || !hasLast) return Promise.resolve({ mode: "export", name: exportName });
+            if (lastName.toLowerCase() !== exportName.toLowerCase()) return Promise.resolve({ mode: "export", name: exportName });
 
-            const choice = await openExportDialog(exportName);
-            if (!choice || choice.mode === "cancel") return { mode: "cancel" };
-            if (choice.mode === "sync") return { mode: "sync", name: exportName };
-            if (choice.mode === "export") return { mode: "export", name: choice.name || exportName };
-            return { mode: "cancel" };
+            return openExportDialog(exportName).then(function(choice) {
+                if (!choice || choice.mode === "cancel") return { mode: "cancel" };
+                if (choice.mode === "sync") return { mode: "sync", name: exportName };
+                if (choice.mode === "export") return { mode: "export", name: choice.name || exportName };
+                return { mode: "cancel" };
+            });
         }
 
         function exportCSV(opts) {
-            const csv = buildCSV(opts && opts.rows ? opts.rows : db);
-            // Add BOM for Excel UTF-8 compatibility
-            const bom = '\uFEFF';
-            const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
+            var csv = buildCSV(opts && opts.rows ? opts.rows : db);
+            var bom = '\uFEFF';
+            var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement("a");
             link.href = url;
             link.download = (opts && opts.name) ? opts.name : getExportFileName();
             document.body.appendChild(link);
@@ -1398,60 +1390,62 @@
             URL.revokeObjectURL(url);
         }
 
-        async function downloadCSV() {
+        function downloadCSV() {
             if (db.length === 0) { alert("Keine Daten!"); return; }
-            const decision = await resolveExportMode();
-            if (decision.mode === "cancel") return;
-            if (decision.mode === "sync") {
-                const merged = mergeDedupe(config.lastImportedDb || [], db);
-                db = merged;
-                saveDB();
-                exportCSV({ rows: merged, name: decision.name });
-                return;
-            }
-            exportCSV({ name: decision.name });
-        }
-
-        async function shareCSV() {
-            if (db.length === 0) { alert("Keine Daten!"); return; }
-            const decision = await resolveExportMode();
-            if (decision.mode === "cancel") return;
-            let rows = db;
-            if (decision.mode === "sync") {
-                rows = mergeDedupe(config.lastImportedDb || [], db);
-                db = rows;
-                saveDB();
-            }
-
-            const csv = buildCSV(rows);
-            const bom = '\uFEFF';
-            const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
-            const canShareFiles = typeof File !== "undefined" && navigator.share && navigator.canShare;
-
-            if (canShareFiles) {
-                const file = new File([blob], decision.name, { type: 'text/csv;charset=utf-8;' });
-                if (navigator.canShare({ files: [file] })) {
-                    navigator.share({ title: "OSINT CSV", files: [file] }).catch(() => {});
+            resolveExportMode().then(function(decision) {
+                if (decision.mode === "cancel") return;
+                if (decision.mode === "sync") {
+                    var merged = mergeDedupe(config.lastImportedDb || [], db);
+                    db = merged;
+                    saveDB();
+                    exportCSV({ rows: merged, name: decision.name });
                     return;
                 }
-            }
+                exportCSV({ name: decision.name });
+            });
+        }
 
-            if (navigator.share) {
-                navigator.share({ title: "OSINT CSV", text: csv }).catch(() => {});
-                return;
-            }
+        function shareCSV() {
+            if (db.length === 0) { alert("Keine Daten!"); return; }
+            resolveExportMode().then(function(decision) {
+                if (decision.mode === "cancel") return;
+                var rows = db;
+                if (decision.mode === "sync") {
+                    rows = mergeDedupe(config.lastImportedDb || [], db);
+                    db = rows;
+                    saveDB();
+                }
 
-            exportCSV({ rows: rows, name: decision.name });
+                var csv = buildCSV(rows);
+                var bom = '\uFEFF';
+                var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+                var canShareFiles = typeof File !== "undefined" && navigator.share && navigator.canShare;
+
+                if (canShareFiles) {
+                    var file = new File([blob], decision.name, { type: 'text/csv;charset=utf-8;' });
+                    if (navigator.canShare({ files: [file] })) {
+                        navigator.share({ title: "OSINT CSV", files: [file] }).catch(function() {});
+                        return;
+                    }
+                }
+
+                if (navigator.share) {
+                    navigator.share({ title: "OSINT CSV", text: csv }).catch(function() {});
+                    return;
+                }
+
+                exportCSV({ rows: rows, name: decision.name });
+            });
         }
 
         // --- CSV IMPORT ---
         function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
+            var result = [];
+            var current = '';
+            var inQuotes = false;
 
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
+            for (var i = 0; i < line.length; i++) {
+                var char = line[i];
 
                 if (inQuotes) {
                     if (char === '"') {
@@ -1480,43 +1474,39 @@
         }
 
         function loadCSV(input) {
-            const file = input.files[0];
+            var file = input.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
-                let text = e.target.result;
-                // Remove BOM if present
+                var text = e.target.result;
                 if (text.charCodeAt(0) === 0xFEFF) {
                     text = text.slice(1);
                 }
 
-                const lines = text.split(/\r?\n/);
-                const importedData = [];
+                var lines = text.split(/\r?\n/);
+                var importedData = [];
 
-                // Detect format by checking header
-                const headerLine = lines[0].toLowerCase();
-                const isNewFormat = headerLine.includes('street') || headerLine.includes('birth_date') || lines[0].split(',').length > 10;
-                const isOldFormat = !isNewFormat && (headerLine.includes('identifier') || lines[0].split(',').length <= 5);
+                var headerLine = lines[0].toLowerCase();
+                var isNewFormat = headerLine.indexOf('street') !== -1 || headerLine.indexOf('birth_date') !== -1 || lines[0].split(',').length > 10;
+                var isOldFormat = !isNewFormat && (headerLine.indexOf('identifier') !== -1 || lines[0].split(',').length <= 5);
 
-                let start = headerLine.includes('name') ? 1 : 0;
+                var start = headerLine.indexOf('name') !== -1 ? 1 : 0;
 
-                for (let i = start; i < lines.length; i++) {
-                    const line = lines[i].trim();
+                for (var i = start; i < lines.length; i++) {
+                    var line = lines[i].trim();
                     if (!line) continue;
 
-                    const parts = parseCSVLine(line);
+                    var parts = parseCSVLine(line);
 
                     if (isOldFormat && parts.length >= 2 && parts.length <= 5) {
-                        // Old format: name, type, identifier, relation, source
-                        const entry = createEmptyEntry();
+                        var entry = createEmptyEntry();
                         entry.name = parts[0] || '';
                         entry.type = parts[1] || 'Person';
-                        const identifier = parts[2] || '';
+                        var identifier = parts[2] || '';
                         entry.relation = parts[3] || 'SEEN_AT';
-                        entry.source = parts[4] || parts[1] || ''; // Fallback to type if no source
+                        entry.source = parts[4] || parts[1] || '';
 
-                        // Map identifier based on type
                         if (entry.type === 'Fahrzeug' && identifier) {
                             entry.license_plate = identifier;
                         } else if (identifier) {
@@ -1525,21 +1515,19 @@
 
                         importedData.push(entry);
                     } else if (parts.length >= CSV_COLUMNS.length) {
-                        // New format: all 47 columns
-                        const entry = createEmptyEntry();
-                        CSV_COLUMNS.forEach((col, idx) => {
-                            entry[col] = parts[idx] || '';
+                        var entryNew = createEmptyEntry();
+                        CSV_COLUMNS.forEach(function(col, idx) {
+                            entryNew[col] = parts[idx] || '';
                         });
-                        importedData.push(entry);
+                        importedData.push(entryNew);
                     } else if (parts.length >= 4) {
-                        // Partial new format - map what we have
-                        const entry = createEmptyEntry();
-                        CSV_COLUMNS.forEach((col, idx) => {
+                        var entryPartial = createEmptyEntry();
+                        CSV_COLUMNS.forEach(function(col, idx) {
                             if (parts[idx] !== undefined) {
-                                entry[col] = parts[idx];
+                                entryPartial[col] = parts[idx];
                             }
                         });
-                        importedData.push(entry);
+                        importedData.push(entryPartial);
                     }
                 }
 
@@ -1559,7 +1547,7 @@
         }
 
         // --- EVENT LISTENERS ---
-        document.getElementById("exportFileName").addEventListener("input", (e) => {
+        document.getElementById("exportFileName").addEventListener("input", function(e) {
             config.exportFileName = e.target.value;
             saveConfig();
         });

@@ -33,17 +33,18 @@
 *.swp
 *.swo
 *.swn
-*~
 .netrwhist
 
 # Emacs
-*~
 \#*\#
 .emacs.desktop
 .emacs.desktop.lock
 *.elc
 auto-save-list
 tramp
+
+# Temp files (editors)
+*~
 
 # ----------------------------------------------------------------------------
 # Operating System
@@ -70,7 +71,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # Linux
-*~
 .fuse_hidden*
 .directory
 .Trash-*
@@ -133,9 +133,6 @@ coverage/
 .jest/
 jest-results/
 
-# TypeScript
-*.tsbuildinfo
-
 # ----------------------------------------------------------------------------
 # Python (for local dev servers)
 # ----------------------------------------------------------------------------
@@ -170,11 +167,6 @@ data/*.json
 exports/
 imports/
 
-# Backup files
-*.bak
-*.backup
-*.old
-
 # ----------------------------------------------------------------------------
 # Security & Credentials
 # ----------------------------------------------------------------------------
@@ -196,7 +188,7 @@ id_dsa
 *.ppk
 
 # ----------------------------------------------------------------------------
-# Temporary Files
+# Temporary & Backup Files
 # ----------------------------------------------------------------------------
 
 tmp/
@@ -204,6 +196,8 @@ temp/
 *.tmp
 *.temp
 *.bak
+*.backup
+*.old
 *.cache
 
 # ----------------------------------------------------------------------------
@@ -235,5 +229,4 @@ local.config.js
 local.settings.json
 
 # Debug files
-*.log
 debug/
